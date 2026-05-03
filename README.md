@@ -4,7 +4,7 @@
 
 A simple tool to customize your GitHub contributions graph with any color palette you like. Perfect for adding a personal touch to your README or portfolio.
 
-See your graph here: ...
+See your graph here: https://gitcolors.vercel.app
 ...
 
 ## ⚡ Quick Setup
