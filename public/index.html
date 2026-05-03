@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gitcolors</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <meta name="description" content="Customize your GitHub contribution graph with any color palette. Drop it into your README." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── THEMES ─────────────────────────────────────────────────── */
+    :root, [data-theme="dark"] {
+      --cell-empty: #1e1e28;
+      --bg: #0c0c0e;
+      --surface: #131316;
+      --surface2: #1a1a1f;
+      --border: #252530;
+      --border2: #2e2e3a;
+      --text: #e8e8f0;
+      --text2: #7a7a9a;
+      --text3: #4a4a6a;
+      --accent: #6c63ff;
+      --c0: #1a1a22;
+      --c1: #2a1f5c;
+      --c2: #4a35a8;
+      --c3: #6c63ff;
+      --c4: #9d97ff;
+      --shadow: 0 4px 24px rgba(0,0,0,0.35);
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.25);
+    }
+
+    [data-theme="light"] {
+      --bg: #f0f0f5;
+      --surface: #ffffff;
+      --surface2: #f5f5fa;
+      --border: #dcdce8;
+      --border2: #c8c8dc;
+      --text: #111118;
+      --text2: #52526a;
+      --text3: #9898b8;
+      --shadow: 0 4px 24px rgba(0,0,0,0.08);
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+      --cell-empty: #e2e2ee;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { transition: background 0.25s; }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+
+    /* ─── README CHROME ──────────────────────────────────────────── */
+    .readme-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 0.8rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px 8px 0 0;
+      font-size: 0.72rem;
+      color: var(--text3);
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .readme-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .readme-dot.r { background: #ff5f57; }
+    .readme-dot.y { background: #febc2e; }
+    .readme-dot.g { background: #28c840; }
+    .readme-filename { margin-left: 0.3rem; font-size: 0.7rem; color: var(--text3); transition: color 0.25s; }
+
+    /* ─── THEME TOGGLE ───────────────────────────────────────────── */
+    .theme-toggle {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .theme-label {
+      font-size: 0.65rem;
+      color: var(--text3);
+      letter-spacing: 0.04em;
+      transition: color 0.25s;
+    }
+    .toggle-track {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      background: var(--border2);
+      border-radius: 10px;
+      cursor: pointer;
+      border: none;
+      padding: 0;
+      transition: background 0.25s;
+      flex-shrink: 0;
+    }
+    .toggle-track:hover { opacity: 0.85; }
+    [data-theme="light"] .toggle-track { background: var(--accent); }
+    .toggle-thumb {
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.22s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    [data-theme="light"] .toggle-thumb { transform: translateX(16px); }
+    .toggle-icon {
+      font-size: 0.75rem;
+      line-height: 1;
+      user-select: none;
+    }
+
+    /* ─── README BODY ────────────────────────────────────────────── */
+    .readme-body {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      padding: 2.5rem 2rem 2rem;
+      transition: background 0.25s, border-color 0.25s;
+      box-shadow: var(--shadow);
+    }
+
+    .md-h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.03em;
+    }
+    .md-h1 .highlight {
+      background: linear-gradient(135deg, var(--accent), var(--c4, #9d97ff));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .md-badge-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0 1.5rem; }
+    .md-badge {
+      font-size: 0.65rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      letter-spacing: 0.04em;
+      transition: background 0.25s, border-color 0.25s, color 0.25s;
+    }
+    .md-badge.primary {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+      color: var(--c4, #9d97ff);
+    }
+
+    .md-p { font-size: 0.88rem; color: var(--text2); margin-bottom: 1.2rem; transition: color 0.25s; }
+    .md-p code {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 3px;
+      padding: 0.1em 0.4em;
+      font-size: 0.85em;
+      color: var(--text);
+      transition: background 0.25s, color 0.25s;
+    }
+
+    .md-hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; transition: border-color 0.25s; }
+
+    .md-h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.25s, border-color 0.25s;
+    }
+    .md-h2::before { content: '## '; color: var(--text3); transition: color 0.25s; }
+
+    /* ─── SEARCH ─────────────────────────────────────────────────── */
+    .search-row { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .search-input {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      padding: 0.65rem 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.25s, color 0.25s;
+    }
+    .search-input::placeholder { color: var(--text3); }
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
+    }
+    .search-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.65rem 1.2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .search-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .search-btn:active { transform: translateY(0); }
+
+    /* ─── PRESETS ────────────────────────────────────────────────── */
+    .color-section { margin-bottom: 1.5rem; }
+    .presets-label {
+      font-size: 0.7rem;
+      color: var(--text3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.7rem;
+      transition: color 0.25s;
+    }
+    .presets { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .preset-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 5px;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text2);
+      transition: all 0.15s;
+    }
+    .preset-btn:hover { border-color: var(--text3); color: var(--text); }
+    .preset-btn.active { border-color: var(--accent); color: var(--text); }
+    .preset-swatch { display: flex; gap: 2px; }
+    .preset-swatch span { width: 10px; height: 10px; border-radius: 2px; }
+
+    /* ─── CUSTOM TRIGGER ─────────────────────────────────────────── */
+    .custom-trigger {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.55rem 0.9rem;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.25s;
+      user-select: none;
+    }
+    .custom-trigger:hover { border-color: var(--text3); }
+    .custom-trigger.open { border-color: var(--accent); border-radius: 6px 6px 0 0; }
+    .custom-trigger-label { font-size: 0.75rem; color: var(--text2); flex: 1; transition: color 0.25s; }
+    .custom-trigger-swatch {
+      width: 20px; height: 20px;
+      border-radius: 4px;
+      border: 2px solid var(--border2);
+      flex-shrink: 0;
+      transition: border-color 0.25s;
+    }
+    .custom-trigger-hex { font-size: 0.7rem; color: var(--text3); letter-spacing: 0.05em; transition: color 0.25s; }
+    .custom-trigger-arrow { font-size: 0.6rem; color: var(--text3); transition: transform 0.2s, color 0.25s; }
+    .custom-trigger.open .custom-trigger-arrow { transform: rotate(180deg); }
+
+    /* ─── PICKER PANEL ───────────────────────────────────────────── */
+    .picker-panel {
+      display: none;
+      flex-direction: column;
+      gap: 0.75rem;
+      background: var(--surface2);
+      border: 1px solid var(--accent);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      padding: 1rem;
+      transition: background 0.25s;
+    }
+    .picker-panel.visible { display: flex; }
+
+    .picker-gradient-wrap {
+      position: relative;
+      width: 100%;
+      height: 190px;
+      border-radius: 5px;
+      overflow: hidden;
+      cursor: crosshair;
+      flex-shrink: 0;
+    }
+    #pickerCanvas { display: block; width: 100%; height: 100%; border-radius: 5px; }
+    .picker-cursor {
+      position: absolute;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 1.5px rgba(0,0,0,0.6), 0 2px 6px rgba(0,0,0,0.5);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+
+    .picker-hue-wrap {
+      position: relative;
+      height: 14px;
+      border-radius: 7px;
+      cursor: pointer;
+      flex-shrink: 0;
+      background: linear-gradient(to right,
+        #ff0000 0%, #ffff00 17%, #00ff00 33%,
+        #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+    }
+    .picker-hue-thumb {
+      position: absolute;
+      top: 50%;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.6);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .picker-bottom { display: flex; align-items: center; gap: 0.6rem; }
+    .picker-preview {
+      width: 34px; height: 34px;
+      border-radius: 5px;
+      border: 2px solid var(--border2);
+      flex-shrink: 0;
+      transition: border-color 0.25s;
+    }
+    .picker-hex-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 5px;
+      padding: 0.4rem 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: var(--text);
+      outline: none;
+      letter-spacing: 0.06em;
+      transition: border-color 0.15s, background 0.25s, color 0.25s;
+    }
+    .picker-hex-input:focus { border-color: var(--accent); }
+
+
+    /* ─── RESULT / GRAPH ─────────────────────────────────────────── */
+    #result { margin-top: 0; }
+
+    .loader { font-size: 0.8rem; color: var(--text2); padding: 2rem 0; text-align: center; transition: color 0.25s; }
+    .spinner { display: inline-block; animation: spin 1s linear infinite; margin-right: 0.5rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-msg {
+      font-size: 0.8rem; color: #f87171;
+      padding: 1rem;
+      background: rgba(248,113,113,0.06);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 6px;
+    }
+
+    .profile-row { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.2rem; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border2); transition: border-color 0.25s; }
+    .profile-name { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; }
+    .profile-sub { font-size: 0.72rem; color: var(--text2); transition: color 0.25s; }
+
+    .stats-row { display: flex; gap: 1.5rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+    .stat { font-size: 0.72rem; color: var(--text2); transition: color 0.25s; }
+    .stat strong {
+      display: block;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--c3, var(--accent));
+      line-height: 1.1;
+    }
+
+    .graph-container {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 1.2rem 1rem 0.8rem;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      -webkit-overflow-scrolling: touch;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .graph-scroll { display: inline-block; }
+    .month-row { position: relative; height: 16px; margin-bottom: 4px; }
+    .month-label { position: absolute; font-size: 0.65rem; color: var(--text2); transition: color 0.25s; }
+    .graph-body { display: flex; align-items: flex-start; }
+    .day-labels { display: flex; flex-direction: column; gap: 2px; margin-right: 4px; padding-top: 1px; }
+    .day-label { width: 20px; height: 13px; font-size: 0.6rem; color: var(--text3); display: flex; align-items: center; justify-content: flex-end; transition: color 0.25s; }
+    .weeks { display: flex; gap: 2px; }
+    .week { display: flex; flex-direction: column; gap: 2px; }
+
+    .day-cell {
+      width: 13px; height: 13px;
+      border-radius: 2px;
+      background: var(--cell-empty);
+      cursor: pointer;
+      transition: background 0.25s, opacity 0.1s, transform 0.1s;
+    }
+    .day-cell:hover { opacity: 0.75; transform: scale(1.2); }
+    /* flat: all active days get the same chosen color */
+    .day-cell[data-level="1"],
+    .day-cell[data-level="2"],
+    .day-cell[data-level="3"],
+    .day-cell[data-level="4"] { background: var(--c1); }
+
+    .legend-row {
+      display: flex; align-items: center; justify-content: flex-end;
+      gap: 0.5rem; font-size: 0.65rem; color: var(--text3);
+      padding: 0.5rem 0 0.1rem;
+      transition: color 0.25s;
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    #tooltip {
+      position: fixed;
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 5px;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.7rem;
+      color: var(--text);
+      pointer-events: none;
+      z-index: 999;
+      white-space: nowrap;
+      box-shadow: var(--shadow);
+      transition: background 0.25s, color 0.25s, border-color 0.25s;
+    }
+
+    /* ─── EMBED ──────────────────────────────────────────────────── */
+    .embed-section { margin-top: 1.5rem; }
+
+    .embed-box {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      padding: 1rem;
+      font-size: 0.75rem;
+      color: var(--text2);
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.7;
+      transition: background 0.25s, color 0.25s, border-color 0.25s;
+    }
+    .copy-btn {
+      position: absolute; top: 0.5rem; right: 0.5rem;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 0.25rem 0.6rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; color: var(--text2);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .copy-btn.copied { color: #4ade80; border-color: #4ade80; }
+
+    .embed-label {
+      font-size: 0.7rem;
+      color: var(--text3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+      transition: color 0.25s;
+    }
+
+    .star-section {
+      margin-top: 1.2rem;
+      padding: 0.9rem 1rem;
+      background: color-mix(in srgb, var(--accent) 8%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+      border-radius: 7px;
+      font-size: 0.82rem;
+      color: var(--text2);
+      text-align: center;
+      line-height: 1.5;
+      transition: background 0.25s, border-color 0.25s, color 0.25s;
+    }
+    .star-section a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .star-section a:hover { text-decoration: underline; }
+
+    /* ─── FOOTER ─────────────────────────────────────────────────── */
+    .about-section {
+      margin-top: 3rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem; color: var(--text3);
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 0.5rem;
+      transition: color 0.25s, border-color 0.25s;
+    }
+    .about-section a { color: var(--text2); text-decoration: none; transition: color 0.15s; }
+    .about-section a:hover { color: var(--text); }
+
+    @media (max-width: 600px) {
+      .wrapper { padding: 1.5rem 1rem 5rem; }
+      .readme-body { padding: 1.5rem 1rem; }
+      .search-row { flex-direction: column; }
+      .search-btn { width: 100%; }
+      .picker-gradient-wrap { height: 150px; }
+      .theme-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="tooltip"></div>
+
+<div class="wrapper">
+  <div class="readme-bar">
+    <div class="readme-dot r"></div>
+    <div class="readme-dot y"></div>
+    <div class="readme-dot g"></div>
+    <span class="readme-filename">README.md</span>
+
+    <div class="theme-toggle">
+      <span class="toggle-icon">🌙</span>
+      <button class="toggle-track" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+        <div class="toggle-thumb"></div>
+      </button>
+      <span class="toggle-icon">☀️</span>
+    </div>
+  </div>
+
+  <div class="readme-body">
+
+    <h1 class="md-h1">git<span class="highlight">colors</span></h1>
+
+    <div class="md-badge-row">
+      <span class="md-badge primary">GitHub contributions</span>
+      <span class="md-badge">custom palette</span>
+      <span class="md-badge">README-ready</span>
+    </div>
+
+    <p class="md-p">
+      Your GitHub contribution graph, exactly how you want it.<br>
+      Pick a color → get a badge → drop it into your <code>README.md</code>.
+    </p>
+
+    <hr class="md-hr" />
+    <h2 class="md-h2">Quick start</h2>
+
+    <div class="search-row">
+      <input id="usernameInput" class="search-input" type="text"
+        placeholder="github username" autocomplete="off" spellcheck="false" />
+      <button class="search-btn" onclick="doSearch()">→ generate</button>
+    </div>
+
+    <div class="color-section">
+      <div class="presets-label">choose a palette</div>
+      <div class="presets" id="presets"></div>
+
+      <div class="custom-trigger" id="customTrigger" onclick="togglePicker()">
+        <span class="custom-trigger-label">custom color</span>
+        <div class="custom-trigger-swatch" id="triggerSwatch"></div>
+        <span class="custom-trigger-hex" id="triggerHex">#6c63ff</span>
+        <span class="custom-trigger-arrow">▼</span>
+      </div>
+
+      <div class="picker-panel" id="pickerPanel">
+        <div class="picker-gradient-wrap" id="gradientWrap">
+          <canvas id="pickerCanvas"></canvas>
+          <div class="picker-cursor" id="pickerCursor"></div>
+        </div>
+        <div class="picker-hue-wrap" id="hueWrap">
+          <div class="picker-hue-thumb" id="hueThumb"></div>
+        </div>
+        <div class="picker-bottom">
+          <div class="picker-preview" id="pickerPreview"></div>
+          <input class="picker-hex-input" id="pickerHexInput" type="text"
+            value="#6c63ff" maxlength="7" spellcheck="false" />
+
+        </div>
+      </div>
+    </div>
+
+    <hr class="md-hr" />
+    <div id="result">
+      <p class="md-p" style="color:var(--text3);font-size:0.78rem;">↑ enter your username to see your graph</p>
+    </div>
+
+    <div class="about-section">
+      <span>gitcolors — put your personality in your contributions</span>
+      <span>made with ♥ — <a href="https://github.com/a104437ana/gitcolors" target="_blank">view on GitHub</a></span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════
+
+function initTheme() {
+  const saved = localStorage.getItem('gitcolors-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = saved || (prefersDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('gitcolors-theme', next);
+}
+
+initTheme();
+
+
+// ═══════════════════════════════════════════════════
+// COLOR MATH
+// ═══════════════════════════════════════════════════
+
+function hexToHsv(hex) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+  const r = parseInt(hex.slice(0,2),16)/255;
+  const g = parseInt(hex.slice(2,4),16)/255;
+  const b = parseInt(hex.slice(4,6),16)/255;
+  const max = Math.max(r,g,b), min = Math.min(r,g,b), d = max-min;
+  let h = 0;
+  if (d !== 0) {
+    switch(max) {
+      case r: h = ((g-b)/d + (g<b?6:0)) * 60; break;
+      case g: h = ((b-r)/d + 2) * 60; break;
+      case b: h = ((r-g)/d + 4) * 60; break;
+    }
+  }
+  return [h, max===0 ? 0 : d/max, max];
+}
+
+function hsvToHex(h, s, v) {
+  const hi = Math.floor(h/60) % 6;
+  const f = h/60 - Math.floor(h/60);
+  const p = v*(1-s), q = v*(1-f*s), t = v*(1-(1-f)*s);
+  let r,g,b;
+  switch(hi) {
+    case 0: r=v;g=t;b=p; break;
+    case 1: r=q;g=v;b=p; break;
+    case 2: r=p;g=v;b=t; break;
+    case 3: r=p;g=q;b=v; break;
+    case 4: r=t;g=p;b=v; break;
+    default: r=v;g=p;b=q;
+  }
+  return '#'+[r,g,b].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');
+}
+
+function hexToHsl(hex) {
+  hex = hex.replace('#','');
+  if (hex.length===3) hex=hex.split('').map(c=>c+c).join('');
+  let r=parseInt(hex.slice(0,2),16)/255, g=parseInt(hex.slice(2,4),16)/255, b=parseInt(hex.slice(4,6),16)/255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b);
+  let h,s, l=(max+min)/2;
+  if(max===min){h=s=0;}
+  else{
+    const d=max-min;
+    s=l>0.5?d/(2-max-min):d/(max+min);
+    switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}
+  }
+  return [h*360,s*100,l*100];
+}
+
+function hslToHex(h,s,l){
+  h/=360;s/=100;l/=100;
+  const q=l<0.5?l*(1+s):l+s-l*s, p=2*l-q;
+  const hue2rgb=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;};
+  return '#'+[hue2rgb(p,q,h+1/3),hue2rgb(p,q,h),hue2rgb(p,q,h-1/3)].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');
+}
+
+function buildPalette(hex) {
+  const [h,s,l] = hexToHsl(hex);
+  return [
+    hslToHex(h, Math.min(s,40), 10),
+    hslToHex(h, Math.min(s+10,65), 20),
+    hslToHex(h, Math.min(s+5,75), 36),
+    hex,
+    hslToHex(h, Math.max(s-12,28), Math.min(l+18,86)),
+  ];
+}
+
+function applyColors(colors) {
+  const root = document.documentElement;
+  // For flat graph: c1–c4 all use the main color (index 3)
+  root.style.setProperty('--c0', colors[0]);
+  root.style.setProperty('--c1', colors[3]);
+  root.style.setProperty('--c2', colors[3]);
+  root.style.setProperty('--c3', colors[3]);
+  root.style.setProperty('--c4', colors[3]);
+  root.style.setProperty('--accent', colors[3]);
+  const hl = document.querySelector('.highlight');
+  if (hl) hl.style.backgroundImage = `linear-gradient(135deg,${colors[3]},${colors[4]})`;
+  updateLegend();
+  updateEmbedCode();
+}
+
+
+// ═══════════════════════════════════════════════════
+// CUSTOM PICKER
+// ═══════════════════════════════════════════════════
+
+let pickerHue = 248;
+let pickerSat = 0.8;
+let pickerVal = 0.95;
+let pickerOpen = false;
+let draggingGrad = false;
+let draggingHue  = false;
+
+const canvas   = document.getElementById('pickerCanvas');
+const ctx      = canvas.getContext('2d');
+const cursor   = document.getElementById('pickerCursor');
+const hueThumb = document.getElementById('hueThumb');
+const preview  = document.getElementById('pickerPreview');
+const hexInput = document.getElementById('pickerHexInput');
+
+function drawGradient() {
+  const w = canvas.offsetWidth || canvas.parentElement.offsetWidth;
+  const h = canvas.offsetHeight || canvas.parentElement.offsetHeight;
+  if (!w || !h) return;
+  canvas.width = w; canvas.height = h;
+  const hueHex = hsvToHex(pickerHue, 1, 1);
+  const gH = ctx.createLinearGradient(0,0,w,0);
+  gH.addColorStop(0, '#ffffff'); gH.addColorStop(1, hueHex);
+  ctx.fillStyle = gH; ctx.fillRect(0,0,w,h);
+  const gV = ctx.createLinearGradient(0,0,0,h);
+  gV.addColorStop(0,'rgba(0,0,0,0)'); gV.addColorStop(1,'rgba(0,0,0,1)');
+  ctx.fillStyle = gV; ctx.fillRect(0,0,w,h);
+}
+
+function syncPickerUI() {
+  const w = canvas.offsetWidth || canvas.parentElement.offsetWidth;
+  const h = canvas.offsetHeight || canvas.parentElement.offsetHeight;
+  cursor.style.left = (pickerSat * w) + 'px';
+  cursor.style.top  = ((1 - pickerVal) * h) + 'px';
+  hueThumb.style.left = ((pickerHue / 360) * 100) + '%';
+  hueThumb.style.background = hsvToHex(pickerHue, 1, 1);
+  const hex = hsvToHex(pickerHue, pickerSat, pickerVal);
+  preview.style.background = hex;
+  hexInput.value = hex;
+  document.getElementById('triggerSwatch').style.background = hex;
+  document.getElementById('triggerHex').textContent = hex;
+  cursor.style.borderColor = pickerVal < 0.35 ? '#888' : '#fff';
+  drawGradient();
+  // live apply — no button needed
+  applyLiveColor(hex);
+}
+
+function applyLiveColor(hex) {
+  const root = document.documentElement;
+  root.style.setProperty('--c1', hex);
+  root.style.setProperty('--c2', hex);
+  root.style.setProperty('--c3', hex);
+  root.style.setProperty('--c4', hex);
+  root.style.setProperty('--accent', hex);
+  const hl = document.querySelector('.highlight');
+  if (hl) hl.style.backgroundImage = `linear-gradient(135deg,${hex},${hex}dd)`;
+  updateLegend();
+  updateEmbedCode();
+}
+
+function getGradPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const cx = e.touches ? e.touches[0].clientX : e.clientX;
+  const cy = e.touches ? e.touches[0].clientY : e.clientY;
+  return [
+    Math.max(0, Math.min(1, (cx-rect.left)/rect.width)),
+    Math.max(0, Math.min(1, (cy-rect.top)/rect.height)),
+  ];
+}
+
+function getHuePos(e) {
+  const rect = document.getElementById('hueWrap').getBoundingClientRect();
+  const cx = e.touches ? e.touches[0].clientX : e.clientX;
+  return Math.max(0, Math.min(360, ((cx-rect.left)/rect.width)*360));
+}
+
+document.getElementById('gradientWrap').addEventListener('mousedown', e => { draggingGrad=true; const [s,v1]=getGradPos(e); pickerSat=s; pickerVal=1-v1; syncPickerUI(); });
+document.getElementById('gradientWrap').addEventListener('touchstart', e => { draggingGrad=true; const [s,v1]=getGradPos(e); pickerSat=s; pickerVal=1-v1; syncPickerUI(); }, {passive:true});
+document.getElementById('hueWrap').addEventListener('mousedown', e => { draggingHue=true; pickerHue=getHuePos(e); syncPickerUI(); });
+document.getElementById('hueWrap').addEventListener('touchstart', e => { draggingHue=true; pickerHue=getHuePos(e); syncPickerUI(); }, {passive:true});
+
+document.addEventListener('mousemove', e => {
+  if (draggingGrad) { const [s,v1]=getGradPos(e); pickerSat=s; pickerVal=1-v1; syncPickerUI(); }
+  if (draggingHue)  { pickerHue=getHuePos(e); syncPickerUI(); }
+});
+document.addEventListener('touchmove', e => {
+  if (draggingGrad) { const [s,v1]=getGradPos(e); pickerSat=s; pickerVal=1-v1; syncPickerUI(); }
+  if (draggingHue)  { pickerHue=getHuePos(e); syncPickerUI(); }
+}, {passive:true});
+document.addEventListener('mouseup',  () => { draggingGrad=false; draggingHue=false; });
+document.addEventListener('touchend', () => { draggingGrad=false; draggingHue=false; });
+
+hexInput.addEventListener('keydown', e => { if(e.key==='Enter') validateHex(); });
+hexInput.addEventListener('blur', validateHex);
+function validateHex() {
+  let v = hexInput.value.trim();
+  if (!v.startsWith('#')) v = '#'+v;
+  if (/^#[0-9a-fA-F]{6}$/i.test(v)) {
+    const [h,s,val] = hexToHsv(v);
+    pickerHue=h; pickerSat=s; pickerVal=val;
+    syncPickerUI();
+  }
+}
+
+function togglePicker() {
+  pickerOpen = !pickerOpen;
+  document.getElementById('pickerPanel').classList.toggle('visible', pickerOpen);
+  document.getElementById('customTrigger').classList.toggle('open', pickerOpen);
+  if (pickerOpen) {
+    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+    requestAnimationFrame(() => syncPickerUI());
+  }
+}
+
+
+
+document.addEventListener('click', e => {
+  if (!pickerOpen) return;
+  const panel = document.getElementById('pickerPanel');
+  const trigger = document.getElementById('customTrigger');
+  if (!panel.contains(e.target) && !trigger.contains(e.target)) {
+    pickerOpen = false;
+    panel.classList.remove('visible');
+    trigger.classList.remove('open');
+  }
+});
+
+
+// ═══════════════════════════════════════════════════
+// PRESETS
+// ═══════════════════════════════════════════════════
+
+const PRESETS = [
+  { name: 'violet',  base: '#6c63ff', colors: ['#1a1a22','#2a1f5c','#4a35a8','#6c63ff','#9d97ff'] },
+  { name: 'emerald', base: '#22c55e', colors: ['#0d1f12','#14532d','#16a34a','#22c55e','#4ade80'] },
+  { name: 'rose',    base: '#f43f5e', colors: ['#1f0d10','#4c0519','#9f1239','#f43f5e','#fb7185'] },
+  { name: 'amber',   base: '#f59e0b', colors: ['#1c1408','#78350f','#b45309','#f59e0b','#fcd34d'] },
+  { name: 'cyan',    base: '#06b6d4', colors: ['#081518','#164e63','#0e7490','#06b6d4','#67e8f9'] },
+  { name: 'slate',   base: '#94a3b8', colors: ['#0f1117','#1e293b','#334155','#94a3b8','#e2e8f0'] },
+];
+
+let currentUsername = '';
+
+function buildPresets() {
+  const container = document.getElementById('presets');
+  PRESETS.forEach((p, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'preset-btn' + (i===0 ? ' active' : '');
+    btn.innerHTML = `<div class="preset-swatch"><span style="background:${p.base}"></span></div>${p.name}`;
+    btn.onclick = () => {
+      document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      if (pickerOpen) {
+        pickerOpen=false;
+        document.getElementById('pickerPanel').classList.remove('visible');
+        document.getElementById('customTrigger').classList.remove('open');
+      }
+      const [h,s,v] = hexToHsv(p.base);
+      pickerHue=h; pickerSat=s; pickerVal=v;
+      document.getElementById('triggerSwatch').style.background = p.base;
+      document.getElementById('triggerHex').textContent = p.base;
+      hexInput.value = p.base;
+      preview.style.background = p.base;
+      applyColors(p.colors);
+    };
+    container.appendChild(btn);
+  });
+}
+
+
+// ═══════════════════════════════════════════════════
+// GRAPH
+// ═══════════════════════════════════════════════════
+
+const API_BASE = 'https://sakura-garden.vercel.app/api/contributions';
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+async function doSearch() {
+  const username = document.getElementById('usernameInput').value.trim();
+  if (!username) return;
+  currentUsername = username;
+  const result = document.getElementById('result');
+  result.innerHTML = `<div class="loader"><span class="spinner">◌</span> fetching <strong>${username}</strong>…</div>`;
+  try {
+    const res = await fetch(`${API_BASE}?username=${encodeURIComponent(username)}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    renderResult(data, username);
+  } catch(err) {
+    result.innerHTML = `<div class="error-msg">✗ couldn't find <strong>${username}</strong> — check the username and try again.</div>`;
+  }
+}
+
+document.getElementById('usernameInput').addEventListener('keydown', e => { if(e.key==='Enter') doSearch(); });
+
+function getLevel(count) {
+  if(count===0) return 0; if(count<=2) return 1; if(count<=5) return 2; if(count<=9) return 3; return 4;
+}
+
+function buildGraph(weeks) {
+  const STEP = 15;
+  let monthHtml = '<div class="month-row">';
+  let lastMonth = -1;
+  weeks.forEach((week,wi) => {
+    const fd = week.contributionDays.find(d=>d.date);
+    if (!fd) return;
+    const m = new Date(fd.date).getMonth();
+    if (m !== lastMonth) { monthHtml += `<span class="month-label" style="left:${wi*STEP}px">${MONTHS[m]}</span>`; lastMonth=m; }
+  });
+  monthHtml += '</div>';
+
+  let dayLabels = '<div class="day-labels">';
+  ['','Mon','','Wed','','Fri',''].forEach(d => { dayLabels += `<div class="day-label">${d}</div>`; });
+  dayLabels += '</div>';
+
+  let weeksHtml = '<div class="weeks">';
+  weeks.forEach(week => {
+    weeksHtml += '<div class="week">';
+    const fd = week.contributionDays[0];
+    if (fd) { const wd=new Date(fd.date).getDay(); for(let i=0;i<wd;i++) weeksHtml+=`<div class="day-cell" style="visibility:hidden"></div>`; }
+    week.contributionDays.forEach(day => {
+      const lv = getLevel(day.contributionCount);
+      weeksHtml += `<div class="day-cell" data-level="${lv}" data-count="${day.contributionCount}" data-date="${day.date}"></div>`;
+    });
+    weeksHtml += '</div>';
+  });
+  weeksHtml += '</div>';
+
+  return `<div class="graph-scroll">${monthHtml}<div class="graph-body">${dayLabels}${weeksHtml}</div></div>`;
+}
+
+function calcStreak(weeks) {
+  let longest=0, current=0;
+  weeks.flatMap(w=>w.contributionDays).forEach(d => {
+    if(d.contributionCount>0){current++;longest=Math.max(longest,current);}else current=0;
+  });
+  return longest;
+}
+
+function updateLegend() {
+  const el = document.getElementById('graphLegend');
+  if (!el) return;
+  const hex = hsvToHex(pickerHue, pickerSat, pickerVal);
+  el.innerHTML = `
+    <span class="legend-dot" style="background:var(--cell-empty)"></span>
+    <span>no contributions</span>
+    <span style="margin-left:0.5rem" class="legend-dot" style="background:${hex}"></span>
+    <span class="legend-dot" style="background:var(--c1)"></span>
+    <span>contributed</span>
+  `;
+}
+
+function renderResult(data, username) {
+  const user = data.user;
+  const cal = user.contributionsCollection.contributionCalendar;
+  const longest = calcStreak(cal.weeks);
+
+  document.getElementById('result').innerHTML = `
+    <div class="profile-row">
+      <img class="avatar" src="${user.avatarUrl}" alt="${user.login}" />
+      <div>
+        <div class="profile-name">${user.name || user.login}</div>
+        <div class="profile-sub">@${user.login} · last 365 days</div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><strong>${cal.totalContributions.toLocaleString()}</strong>contributions</div>
+      <div class="stat"><strong>${longest}</strong>longest streak</div>
+    </div>
+    <div class="graph-container">
+      ${buildGraph(cal.weeks)}
+      <div class="legend-row" id="graphLegend"></div>
+    </div>
+    <div class="embed-section" id="embedSection">
+      <div class="embed-label">picture tag</div>
+      <div class="embed-box" id="embedBox">
+        <button class="copy-btn" id="copyBtn" onclick="copyEmbed()">copy</button>
+        <span id="embedText"></span>
+      </div>
+      <div class="star-section">
+        ⭐ If you liked this project consider giving it a star on <a href="https://github.com/a104437ana/gitcolors" target="_blank">GitHub</a>! ⭐
+      </div>
+    </div>
+  `;
+
+  setupTooltips();
+  updateLegend();
+  updateEmbedCode();
+}
+
+function setupTooltips() {
+  const tooltip = document.getElementById('tooltip');
+  document.querySelectorAll('.day-cell[data-date]').forEach(cell => {
+    cell.addEventListener('mousemove', e => {
+      const count = parseInt(cell.dataset.count);
+      const date = new Date(cell.dataset.date).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+      tooltip.textContent = count===0 ? `no contributions · ${date}` : `${count} contribution${count!==1?'s':''} · ${date}`;
+      tooltip.style.display = 'block';
+      tooltip.style.left = (e.clientX+12)+'px';
+      tooltip.style.top  = (e.clientY-32)+'px';
+    });
+    cell.addEventListener('mouseleave', () => { tooltip.style.display='none'; });
+  });
+}
+
+
+// ═══════════════════════════════════════════════════
+// EMBED
+// ═══════════════════════════════════════════════════
+
+function getEmbedUrl(theme) {
+  const colorHex = hsvToHex(pickerHue, pickerSat, pickerVal).replace('#','');
+  return `https://gitcolors.vercel.app/api/svg?username=${currentUsername}&color=${colorHex}&theme=${theme}`;
+}
+
+function getEmbedCode() {
+  const l=getEmbedUrl('light'), d=getEmbedUrl('dark');
+  return `<picture>\n  <source srcset="${d}" media="(prefers-color-scheme: dark)" />\n  <source srcset="${l}" media="(prefers-color-scheme: light)" />\n  <img src="${l}" alt="${currentUsername} contributions" width="900" />\n</picture>`;
+}
+
+function updateEmbedCode() {
+  const el = document.getElementById('embedText');
+  if (!el || !currentUsername) return;
+  el.textContent = getEmbedCode();
+}
+
+
+function copyEmbed() {
+  navigator.clipboard.writeText(document.getElementById('embedText').textContent);
+  const btn = document.getElementById('copyBtn');
+  btn.textContent='copied!'; btn.classList.add('copied');
+  setTimeout(()=>{ if(btn){btn.textContent='copy';btn.classList.remove('copied');} }, 1800);
+}
+
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+
+buildPresets();
+// Init picker to violet, apply live color
+const initHex = '#6c63ff';
+const [ih,is,iv] = hexToHsv(initHex);
+pickerHue=ih; pickerSat=is; pickerVal=iv;
+document.getElementById('triggerSwatch').style.background = initHex;
+document.getElementById('triggerHex').textContent = initHex;
+preview.style.background = initHex;
+hexInput.value = initHex;
+applyLiveColor(initHex);
+</script>
+</body>
+</html>
