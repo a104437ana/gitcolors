@@ -94,7 +94,7 @@
     .readme-dot.r { background: #ff5f57; }
     .readme-dot.y { background: #febc2e; }
     .readme-dot.g { background: #28c840; }
-    .readme-filename { margin-left: 0.3rem; font-size: 0.7rem; color: var(--text3); transition: color 0.25s; }
+    .readme-filename { font-size: 0.7rem; color: var(--text3); transition: color 0.25s; }
 
     /* ─── THEME TOGGLE ───────────────────────────────────────────── */
     .theme-toggle {
@@ -208,7 +208,7 @@
     .md-h2::before { content: '## '; color: var(--text3); transition: color 0.25s; }
 
     /* ─── SEARCH ─────────────────────────────────────────────────── */
-    .search-row { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .search-row { display: flex; gap: 0.5rem; margin: 1.75rem 0 1.5rem; }
     .search-input {
       flex: 1;
       background: var(--surface2);
@@ -556,9 +556,6 @@
 
 <div class="wrapper">
   <div class="readme-bar">
-    <div class="readme-dot r"></div>
-    <div class="readme-dot y"></div>
-    <div class="readme-dot g"></div>
     <span class="readme-filename">README.md</span>
 
     <div class="theme-toggle">
@@ -574,19 +571,9 @@
 
     <h1 class="md-h1">git<span class="highlight">colors</span></h1>
 
-    <div class="md-badge-row">
-      <span class="md-badge primary">GitHub contributions</span>
-      <span class="md-badge">custom palette</span>
-      <span class="md-badge">README-ready</span>
-    </div>
-
     <p class="md-p">
-      Your GitHub contribution graph, exactly how you want it.<br>
-      Pick a color → get a badge → drop it into your <code>README.md</code>.
+      Your GitHub contribution graph, in any color you want.
     </p>
-
-    <hr class="md-hr" />
-    <h2 class="md-h2">Quick start</h2>
 
     <div class="search-row">
       <input id="usernameInput" class="search-input" type="text"
@@ -601,7 +588,7 @@
       <div class="custom-trigger" id="customTrigger" onclick="togglePicker()">
         <span class="custom-trigger-label">custom color</span>
         <div class="custom-trigger-swatch" id="triggerSwatch"></div>
-        <span class="custom-trigger-hex" id="triggerHex">#6c63ff</span>
+        <span class="custom-trigger-hex" id="triggerHex">#ff2d95</span>
         <span class="custom-trigger-arrow">▼</span>
       </div>
 
@@ -880,12 +867,13 @@ document.addEventListener('click', e => {
 // ═══════════════════════════════════════════════════
 
 const PRESETS = [
-  { name: 'violet',  base: '#6c63ff', colors: ['#1a1a22','#2a1f5c','#4a35a8','#6c63ff','#9d97ff'] },
-  { name: 'emerald', base: '#22c55e', colors: ['#0d1f12','#14532d','#16a34a','#22c55e','#4ade80'] },
-  { name: 'rose',    base: '#f43f5e', colors: ['#1f0d10','#4c0519','#9f1239','#f43f5e','#fb7185'] },
-  { name: 'amber',   base: '#f59e0b', colors: ['#1c1408','#78350f','#b45309','#f59e0b','#fcd34d'] },
-  { name: 'cyan',    base: '#06b6d4', colors: ['#081518','#164e63','#0e7490','#06b6d4','#67e8f9'] },
-  { name: 'slate',   base: '#94a3b8', colors: ['#0f1117','#1e293b','#334155','#94a3b8','#e2e8f0'] },
+  { name: 'hot pink', base: '#ff2d95', colors: ['#2a0a1a','#7a1050','#c01a78','#ff2d95','#ff8ac4'] },
+  { name: 'royal',    base: '#2b5cff', colors: ['#050a1f','#12276b','#1b3fb3','#2b5cff','#8aa6ff'] },
+  { name: 'crimson',  base: '#e8102b', colors: ['#210306','#6b0913','#b60c1e','#e8102b','#ff6b78'] },
+  { name: 'electric', base: '#00c2ff', colors: ['#061a22','#0a4a63','#0090b8','#00c2ff','#7ce3ff'] },
+  { name: 'forest',   base: '#0f9d58', colors: ['#04160c','#0d4a2b','#0c7a41','#0f9d58','#6ee6a3'] },
+  { name: 'hacker',   base: '#00ff41', colors: ['#031505','#0a5c1c','#00b32e','#00ff41','#8bffa8'] },
+  { name: 'blush',    base: '#ffb3d9', colors: ['#2e1522','#6b2b4a','#cc6fa3','#ffb3d9','#ffe0f0'] },
 ];
 
 let currentUsername = '';
@@ -1094,8 +1082,8 @@ function copyEmbed() {
 // ═══════════════════════════════════════════════════
 
 buildPresets();
-// Init picker to violet, apply live color
-const initHex = '#6c63ff';
+// Init picker to hot pink, apply live color
+const initHex = '#ff2d95';
 const [ih,is,iv] = hexToHsv(initHex);
 pickerHue=ih; pickerSat=is; pickerVal=iv;
 document.getElementById('triggerSwatch').style.background = initHex;
