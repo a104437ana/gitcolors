@@ -1039,9 +1039,9 @@ function renderResult(data, username) {
           <div class="profile-sub">@${user.login} · last 365 days</div>
         </div>
       </div>
-      <div class="quick-copy" id="quickCopy" onclick="copyEmbed('quickCopy')" title="Copy picture tag">
+      <div class="quick-copy" id="quickCopy" onclick="copyAndEditReadme('${user.login}')" title="Copy picture tag and open your README so you can paste it">
         <span class="quick-copy-icon">📋</span>
-        <span class="quick-copy-tag" id="quickCopyLabel">copy tag</span>
+        <span class="quick-copy-tag" id="quickCopyLabel">copy & paste in README</span>
       </div>
     </div>
     <div class="graph-container">
@@ -1109,7 +1109,20 @@ function updateEmbedCode() {
 }
 
 
-function copyEmbed(sourceId) {
+function copyAndEditReadme(login) {
+  navigator.clipboard.writeText(document.getElementById('embedText').textContent);
+
+  const quick = document.getElementById('quickCopy');
+  const quickLabel = document.getElementById('quickCopyLabel');
+  if (quick && quickLabel) {
+    quick.classList.add('copied'); quickLabel.textContent='copied! opening…';
+    setTimeout(()=>{ quick.classList.remove('copied'); quickLabel.textContent='copy & paste in README'; }, 1800);
+  }
+
+  window.open(`https://github.com/${login}/${login}/edit/main/README.md`, '_blank');
+}
+
+function copyEmbed() {
   navigator.clipboard.writeText(document.getElementById('embedText').textContent);
 
   const btn = document.getElementById('copyBtn');
@@ -1119,7 +1132,7 @@ function copyEmbed(sourceId) {
   const quickLabel = document.getElementById('quickCopyLabel');
   if (quick && quickLabel) {
     quick.classList.add('copied'); quickLabel.textContent='copied!';
-    setTimeout(()=>{ quick.classList.remove('copied'); quickLabel.textContent='copy tag'; }, 1800);
+    setTimeout(()=>{ quick.classList.remove('copied'); quickLabel.textContent='copy & paste in README'; }, 1800);
   }
 }
 
