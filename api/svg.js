@@ -16,7 +16,7 @@ function isValidHex(hex) {
 function generateSVG(weeks, theme, colorHex) {
   const isDark = theme === 'dark';
   const activeColor = `#${colorHex}`;
-  const emptyStroke = isDark ? '#ffffff' : '#000000';
+  const emptyStroke = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.25)';
   const textColor = isDark ? '#ffffff' : '#000000';
 
   const cellSize = 11, gap = 2, step = cellSize + gap;
