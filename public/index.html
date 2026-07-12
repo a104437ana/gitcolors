@@ -13,6 +13,7 @@
     /* ─── THEMES ─────────────────────────────────────────────────── */
     :root, [data-theme="dark"] {
       --cell-empty: #1e1e28;
+      --mono-text: #ffffff;
       --bg: #0c0c0e;
       --surface: #131316;
       --surface2: #1a1a1f;
@@ -43,6 +44,7 @@
       --shadow: 0 4px 24px rgba(0,0,0,0.08);
       --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
       --cell-empty: #e2e2ee;
+      --mono-text: #000000;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -419,26 +421,27 @@
     }
     .graph-scroll { display: inline-block; }
     .month-row { position: relative; height: 16px; margin-bottom: 4px; }
-    .month-label { position: absolute; font-size: 0.65rem; color: var(--text2); transition: color 0.25s; }
+    .month-label { position: absolute; font-size: 0.65rem; color: var(--mono-text); transition: color 0.25s; }
     .graph-body { display: flex; align-items: flex-start; }
     .day-labels { display: flex; flex-direction: column; gap: 2px; margin-right: 4px; padding-top: 1px; }
-    .day-label { width: 20px; height: 13px; font-size: 0.6rem; color: var(--text3); display: flex; align-items: center; justify-content: flex-end; transition: color 0.25s; }
+    .day-label { width: 20px; height: 13px; font-size: 0.6rem; color: var(--mono-text); display: flex; align-items: center; justify-content: flex-end; transition: color 0.25s; }
     .weeks { display: flex; gap: 2px; }
     .week { display: flex; flex-direction: column; gap: 2px; }
 
     .day-cell {
       width: 13px; height: 13px;
       border-radius: 2px;
-      background: var(--cell-empty);
+      background: transparent;
+      border: 1px solid var(--cell-empty);
       cursor: pointer;
-      transition: background 0.25s, opacity 0.1s, transform 0.1s;
+      transition: background 0.25s, border-color 0.25s, opacity 0.1s, transform 0.1s;
     }
     .day-cell:hover { opacity: 0.75; transform: scale(1.2); }
-    /* flat: all active days get the same chosen color */
+    /* flat: all active days get the same chosen color, no border needed */
     .day-cell[data-level="1"],
     .day-cell[data-level="2"],
     .day-cell[data-level="3"],
-    .day-cell[data-level="4"] { background: var(--c1); }
+    .day-cell[data-level="4"] { background: var(--c1); border-color: var(--c1); }
 
     .legend-row {
       display: flex; align-items: center; justify-content: flex-end;
@@ -918,7 +921,7 @@ function buildPresets() {
 // GRAPH
 // ═══════════════════════════════════════════════════
 
-const API_BASE = 'https://gitcolors.vercel.app/api/contributions';
+const API_BASE = 'https://sakura-garden.vercel.app/api/contributions';
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 async function doSearch() {
@@ -988,7 +991,7 @@ function updateLegend() {
   if (!el) return;
   const hex = hsvToHex(pickerHue, pickerSat, pickerVal);
   el.innerHTML = `
-    <span class="legend-dot" style="background:var(--cell-empty)"></span>
+    <span class="legend-dot" style="background:transparent;border:1px solid var(--cell-empty)"></span>
     <span>no contributions</span>
     <span style="margin-left:0.5rem" class="legend-dot" style="background:${hex}"></span>
     <span class="legend-dot" style="background:var(--c1)"></span>
