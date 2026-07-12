@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+  <script>
+    (function() {
+      var saved = localStorage.getItem('gitcolors-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = saved || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>gitcolors</title>
@@ -393,7 +401,8 @@
       border-radius: 6px;
     }
 
-    .profile-row { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.2rem; }
+    .profile-row { display: flex; align-items: center; justify-content: space-between; gap: 0.9rem; margin-bottom: 1.2rem; }
+    .profile-info { display: flex; align-items: center; gap: 0.9rem; }
     .avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border2); transition: border-color 0.25s; }
     .profile-name { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; }
     .profile-sub { font-size: 0.72rem; color: var(--text2); transition: color 0.25s; }
@@ -474,6 +483,26 @@
     }
 
     /* ─── EMBED ──────────────────────────────────────────────────── */
+    .quick-copy {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      padding: 0.45rem 0.7rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .quick-copy:hover { border-color: var(--accent); }
+    .quick-copy.copied { border-color: #4ade80; }
+    .quick-copy-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text2);
+      transition: color 0.25s;
+    }
+    .quick-copy-icon { font-size: 0.8rem; }
+
     .embed-section { margin-top: 1.5rem; }
 
     .embed-box {
@@ -1003,10 +1032,16 @@ function renderResult(data, username) {
 
   document.getElementById('result').innerHTML = `
     <div class="profile-row">
-      <img class="avatar" src="${user.avatarUrl}" alt="${user.login}" />
-      <div>
-        <div class="profile-name">${user.name || user.login}</div>
-        <div class="profile-sub">@${user.login} · last 365 days</div>
+      <div class="profile-info">
+        <img class="avatar" src="${user.avatarUrl}" alt="${user.login}" />
+        <div>
+          <div class="profile-name">${user.name || user.login}</div>
+          <div class="profile-sub">@${user.login} · last 365 days</div>
+        </div>
+      </div>
+      <div class="quick-copy" id="quickCopy" onclick="copyEmbed('quickCopy')" title="Copy picture tag">
+        <span class="quick-copy-icon">📋</span>
+        <span class="quick-copy-tag" id="quickCopyLabel">copy tag</span>
       </div>
     </div>
     <div class="graph-container">
@@ -1074,11 +1109,18 @@ function updateEmbedCode() {
 }
 
 
-function copyEmbed() {
+function copyEmbed(sourceId) {
   navigator.clipboard.writeText(document.getElementById('embedText').textContent);
+
   const btn = document.getElementById('copyBtn');
-  btn.textContent='copied!'; btn.classList.add('copied');
-  setTimeout(()=>{ if(btn){btn.textContent='copy';btn.classList.remove('copied');} }, 1800);
+  if (btn) { btn.textContent='copied!'; btn.classList.add('copied'); setTimeout(()=>{ if(btn){btn.textContent='copy';btn.classList.remove('copied');} }, 1800); }
+
+  const quick = document.getElementById('quickCopy');
+  const quickLabel = document.getElementById('quickCopyLabel');
+  if (quick && quickLabel) {
+    quick.classList.add('copied'); quickLabel.textContent='copied!';
+    setTimeout(()=>{ quick.classList.remove('copied'); quickLabel.textContent='copy tag'; }, 1800);
+  }
 }
 
 
