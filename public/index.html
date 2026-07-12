@@ -12,7 +12,7 @@
   <style>
     /* ─── THEMES ─────────────────────────────────────────────────── */
     :root, [data-theme="dark"] {
-      --cell-empty: #1e1e28;
+      --cell-empty: #ffffff;
       --mono-text: #ffffff;
       --bg: #0c0c0e;
       --surface: #131316;
@@ -43,7 +43,7 @@
       --text3: #9898b8;
       --shadow: 0 4px 24px rgba(0,0,0,0.08);
       --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
-      --cell-empty: #e2e2ee;
+      --cell-empty: #000000;
       --mono-text: #000000;
     }
 
@@ -950,11 +950,18 @@ function buildGraph(weeks) {
   const STEP = 15;
   let monthHtml = '<div class="month-row">';
   let lastMonth = -1;
+  let lastLabelWeek = -10;
   weeks.forEach((week,wi) => {
     const fd = week.contributionDays.find(d=>d.date);
     if (!fd) return;
-    const m = new Date(fd.date).getMonth();
-    if (m !== lastMonth) { monthHtml += `<span class="month-label" style="left:${wi*STEP}px">${MONTHS[m]}</span>`; lastMonth=m; }
+    const date = new Date(fd.date);
+    const m = date.getMonth();
+    const d = date.getDate();
+    if (m !== lastMonth && d <= 7 && (wi - lastLabelWeek) > 2) {
+      monthHtml += `<span class="month-label" style="left:${wi*STEP}px">${MONTHS[m]}</span>`;
+      lastMonth = m;
+      lastLabelWeek = wi;
+    }
   });
   monthHtml += '</div>';
 
