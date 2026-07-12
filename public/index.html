@@ -1056,7 +1056,7 @@ function renderResult(data, username) {
       <div class="legend-row" id="graphLegend"></div>
     </div>
     <div class="embed-section" id="embedSection">
-      <div class="embed-label">picture tag</div>
+      <div class="embed-label">or copy manually</div>
       <div class="embed-box" id="embedBox">
         <button class="copy-btn" id="copyBtn" onclick="copyEmbed()">copy</button>
         <span id="embedText"></span>
@@ -1099,7 +1099,7 @@ function getEmbedUrl(theme) {
 
 function getEmbedCode() {
   const l=getEmbedUrl('light'), d=getEmbedUrl('dark');
-  return `<picture>\n  <source srcset="${d}" media="(prefers-color-scheme: dark)" />\n  <source srcset="${l}" media="(prefers-color-scheme: light)" />\n  <img src="${l}" alt="${currentUsername} contributions" width="900" />\n</picture>`;
+  return `<picture>\n  <source srcset="${d}" media="(prefers-color-scheme: dark)" />\n  <source srcset="${l}" media="(prefers-color-scheme: light)" />\n  <img src="${l}" alt="${currentUsername} contributions" width="1000" />\n</picture>`;
 }
 
 function updateEmbedCode() {
