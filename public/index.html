@@ -425,11 +425,11 @@
       border-radius: 8px;
       padding: 2.4rem 1rem 0.8rem;
       overflow-x: auto;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.2rem;
       -webkit-overflow-scrolling: touch;
       transition: background 0.25s, border-color 0.25s;
     }
-    .graph-toggle { position: absolute; top: 0.7rem; right: 0.8rem; }
+    .graph-toggle { position: absolute; top: 0.7rem; left: 0.8rem; margin-left: 0; }
     .graph-scroll { display: inline-block; }
     .month-row { position: relative; height: 16px; margin-bottom: 4px; }
     .month-label { position: absolute; font-size: 0.65rem; color: var(--mono-text); transition: color 0.25s; }
@@ -483,12 +483,17 @@
     }
 
     /* ─── EMBED ──────────────────────────────────────────────────── */
+    .quick-copy-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
     .quick-copy {
       display: flex; align-items: center; gap: 0.5rem;
       background: var(--surface2);
       border: 1px solid var(--border2);
       border-radius: 6px;
-      padding: 0.45rem 0.7rem;
+      padding: 0.55rem 1rem;
       cursor: pointer;
       transition: all 0.15s;
       flex-shrink: 0;
@@ -497,11 +502,11 @@
     .quick-copy.copied { border-color: #4ade80; }
     .quick-copy-tag {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
+      font-size: 0.72rem;
       color: var(--text2);
       transition: color 0.25s;
     }
-    .quick-copy-icon { font-size: 0.8rem; }
+    .quick-copy-icon { font-size: 0.85rem; }
 
     .embed-section { margin-top: 1.5rem; }
 
@@ -1039,10 +1044,6 @@ function renderResult(data, username) {
           <div class="profile-sub">@${user.login} · last 365 days</div>
         </div>
       </div>
-      <div class="quick-copy" id="quickCopy" onclick="copyAndEditReadme('${user.login}')" title="Copy picture tag and open your README so you can paste it">
-        <span class="quick-copy-icon">📋</span>
-        <span class="quick-copy-tag" id="quickCopyLabel">copy & paste in README</span>
-      </div>
     </div>
     <div class="graph-container">
       <div class="theme-toggle graph-toggle">
@@ -1054,6 +1055,12 @@ function renderResult(data, username) {
       </div>
       ${buildGraph(cal.weeks)}
       <div class="legend-row" id="graphLegend"></div>
+    </div>
+    <div class="quick-copy-wrap">
+      <div class="quick-copy" id="quickCopy" onclick="copyAndEditReadme('${user.login}')" title="Copy picture tag and open your README so you can paste it">
+        <span class="quick-copy-icon">📋</span>
+        <span class="quick-copy-tag" id="quickCopyLabel">copy & paste in README</span>
+      </div>
     </div>
     <div class="embed-section" id="embedSection">
       <div class="embed-label">or copy manually</div>
