@@ -2,7 +2,9 @@
 
 ## GitHub contributions graph in any color 🌈
 
-A simple tool to **customize your GitHub contributions graph** with **any color** palette you like. Supports **dark and light mode**, has several **built-in themes** in case you don't want a single color, and lets you display the graph either as a **flat color for active days** or with **intensity based on how much you contributed**. Perfect for **adding a personal touch to your README** — quick and easy, **ready in seconds** through the [website](https://gitcolors.vercel.app).
+A simple tool to **customize your GitHub contributions graph** with **any color, theme, and display mode** you want.
+
+Perfect for **adding a personal touch to your README** — quick and easy, **ready in seconds** through the [website](https://gitcolors.vercel.app).
 
 See your graph here: https://gitcolors.vercel.app
 <picture>
