@@ -317,27 +317,27 @@
       box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
     }
     .search-btn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
+      background: transparent;
+      color: var(--text);
+      border: 2px solid var(--accent);
       border-radius: 6px;
-      padding: 0.65rem 1.2rem;
+      padding: 0.6rem 1.2rem;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
       font-size: 0.85rem;
       font-weight: 700;
       cursor: pointer;
-      transition: transform 0.18s cubic-bezier(.4,0,.2,1), box-shadow 0.18s, filter 0.15s;
+      transition: transform 0.18s cubic-bezier(.4,0,.2,1), box-shadow 0.18s, filter 0.15s, background 0.15s;
       white-space: nowrap;
     }
     .search-btn:hover {
       transform: translateY(-2px);
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
       box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 40%, transparent);
-      filter: brightness(1.08);
     }
     .search-btn:active {
       transform: translateY(0);
+      background: color-mix(in srgb, var(--accent) 18%, transparent);
       box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 30%, transparent);
-      filter: brightness(0.97);
     }
 
     /* ─── RESULT / GRAPH ─────────────────────────────────────────── */
@@ -453,86 +453,40 @@
       max-width: 100%;
     }
     .quick-copy {
-      display: flex; align-items: center; gap: 0.5rem;
-      background: var(--surface2);
-      border: 1px solid var(--border2);
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: transparent;
+      color: var(--text);
+      border: 2px solid var(--accent);
       border-radius: 6px;
-      padding: 0.55rem 1rem;
+      padding: 0.6rem 1.2rem;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: transform 0.18s cubic-bezier(.4,0,.2,1), box-shadow 0.18s, filter 0.15s, background 0.15s, border-color 0.15s;
       max-width: 100%;
     }
-    .quick-copy:hover { border-color: var(--accent); }
+    .quick-copy:hover {
+      transform: translateY(-2px);
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 40%, transparent);
+    }
+    .quick-copy:active {
+      transform: translateY(0);
+      background: color-mix(in srgb, var(--accent) 18%, transparent);
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 30%, transparent);
+    }
     .quick-copy.copied { border-color: #4ade80; }
     .quick-copy-tag {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
-      font-size: 0.72rem;
-      color: var(--text2);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
       transition: color 0.25s;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .quick-copy-icon { font-size: 0.85rem; }
+    .quick-copy-icon { font-size: 0.9rem; }
 
-    .embed-section { margin-top: 1.5rem; max-width: 100%; }
-
-    .embed-box {
-      position: relative;
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      border-radius: 6px;
-      padding: 1rem;
-      font-size: 0.75rem;
-      color: var(--text2);
-      white-space: pre;
-      overflow-x: auto;
-      line-height: 1.7;
-      transition: background 0.25s, color 0.25s, border-color 0.25s;
-      max-width: 100%;
-    }
-    .copy-btn {
-      position: absolute; top: 0.5rem; right: 0.5rem;
-      background: var(--surface2);
-      border: 1px solid var(--border2);
-      border-radius: 4px;
-      padding: 0.25rem 0.6rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
-      font-size: 0.7rem; color: var(--text2);
-      cursor: pointer; transition: all 0.15s;
-    }
-    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .copy-btn.copied { color: #4ade80; border-color: #4ade80; }
-
-    .embed-label {
-      font-size: 0.7rem;
-      color: var(--text3);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 0.4rem;
-      transition: color 0.25s;
-    }
-
-    .star-section {
-      margin-top: 1.2rem;
-      padding: 0.9rem 1rem;
-      background: color-mix(in srgb, var(--accent) 8%, transparent);
-      border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
-      border-radius: 7px;
-      font-size: 0.82rem;
-      color: var(--text2);
-      text-align: center;
-      line-height: 1.5;
-      transition: background 0.25s, border-color 0.25s, color 0.25s;
-    }
-    .star-section a {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .star-section a:hover { text-decoration: underline; }
-
-    /* ─── DEMO STAR CTA (shown before a username is searched) ─────── */
+    /* ─── DEMO STAR CTA (shown after every result, demo or real) ──── */
     .demo-star-cta {
       display: flex;
       align-items: center;
@@ -543,26 +497,26 @@
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
-      background: var(--accent);
-      color: #fff;
-      border: none;
+      background: transparent;
+      color: var(--text);
+      border: 2px solid var(--accent);
       border-radius: 6px;
-      padding: 0.65rem 1.2rem;
+      padding: 0.6rem 1.15rem;
       text-decoration: none;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
       font-size: 0.85rem;
       font-weight: 700;
-      transition: transform 0.18s cubic-bezier(.4,0,.2,1), box-shadow 0.18s, filter 0.15s;
+      transition: transform 0.18s cubic-bezier(.4,0,.2,1), box-shadow 0.18s, filter 0.15s, background 0.15s;
     }
     .demo-star-btn:hover {
       transform: translateY(-2px);
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
       box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 40%, transparent);
-      filter: brightness(1.08);
     }
     .demo-star-btn:active {
       transform: translateY(0);
+      background: color-mix(in srgb, var(--accent) 18%, transparent);
       box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 30%, transparent);
-      filter: brightness(0.97);
     }
     .demo-star-btn-icon { font-size: 0.95rem; line-height: 1; }
 
@@ -617,7 +571,7 @@
         <h1 class="md-h1">git<span class="highlight">colors</span></h1>
         <p class="md-p">
           Your GitHub contribution graph, in any color you want
-          <br>Easy to add to your GitHub profile README
+          <br>Add it to your GitHub profile README in seconds
         </p>
         <div class="search-row">
           <input id="usernameInput" class="search-input" type="text"
@@ -751,6 +705,7 @@ function applyLiveColor(hex) {
   if (hl) hl.style.backgroundImage = `linear-gradient(135deg,${hex},${hex}dd)`;
   updateLegend();
   updateEmbedCode();
+  if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
 }
 
 
@@ -862,6 +817,7 @@ async function doSearch() {
   const username = document.getElementById('usernameInput').value.trim();
   if (!username) return;
   currentUsername = username;
+  quickCopyState = 'idle';
   const result = document.getElementById('result');
   result.innerHTML = `<div class="loader"><span class="spinner">◌</span> fetching <strong>${username}</strong>…</div>`;
   try {
@@ -967,30 +923,24 @@ function renderResult(data, username, isDemo) {
     ? `<p class="demo-note">showing an example (@${username}) —<br class="demo-note-break"> <u>enter your username above</u> to generate your own GitHub contribution graph...</p>`
     : '';
 
-  const actionBlock = isDemo ? `
+  const starCta = `
     <div class="demo-star-cta">
       <a class="demo-star-btn" href="https://github.com/a104437ana/gitcolors" target="_blank">
         <span class="demo-star-btn-icon">⭐</span>
         <span>Check out the project on GitHub and consider giving it a star</span>
       </a>
     </div>
-  ` : `
+  `;
+
+  const actionBlock = isDemo ? starCta : `
+  <br>
     <div class="quick-copy-wrap">
-      <div class="quick-copy" id="quickCopy" onclick="copyAndEditReadme('${user.login}')" title="Copy picture tag and open your README so you can paste it">
-        <span class="quick-copy-icon">📋</span>
-        <span class="quick-copy-tag" id="quickCopyLabel">copy & paste in README</span>
+      <div class="quick-copy" id="quickCopy" onclick="handleQuickCopy('${user.login}')" title="Copy the embed code, then click again to open your README and paste it">
+        <span class="quick-copy-icon" id="quickCopyIcon">📋</span>
+        <span class="quick-copy-tag" id="quickCopyLabel">copy image</span>
       </div>
     </div>
-    <div class="embed-section" id="embedSection">
-      <div class="embed-label">or copy manually</div>
-      <div class="embed-box" id="embedBox">
-        <button class="copy-btn" id="copyBtn" onclick="copyEmbed()">copy</button>
-        <span id="embedText"></span>
-      </div>
-      <div class="star-section">
-        ⭐ If you liked this project consider giving it a star on <a href="https://github.com/a104437ana/gitcolors" target="_blank">GitHub</a>! ⭐
-      </div>
-    </div>
+    ${starCta}
   `;
 
   document.getElementById('result').innerHTML = `
@@ -1053,30 +1003,33 @@ function updateEmbedCode() {
 }
 
 
-function copyAndEditReadme(login) {
-  navigator.clipboard.writeText(document.getElementById('embedText').textContent);
+let quickCopyState = 'idle'; // 'idle' | 'copied'
 
+function resetQuickCopyState() {
+  quickCopyState = 'idle';
   const quick = document.getElementById('quickCopy');
-  const quickLabel = document.getElementById('quickCopyLabel');
-  if (quick && quickLabel) {
-    quick.classList.add('copied'); quickLabel.textContent='copied! opening…';
-    setTimeout(()=>{ quick.classList.remove('copied'); quickLabel.textContent='copy & paste in README'; }, 1800);
-  }
-
-  window.open(`https://github.com/${login}/${login}/edit/main/README.md`, '_blank');
+  const label = document.getElementById('quickCopyLabel');
+  const icon = document.getElementById('quickCopyIcon');
+  if (!quick || !label) return;
+  quick.classList.remove('copied');
+  label.textContent = 'copy image';
+  if (icon) icon.textContent = '📋';
 }
 
-function copyEmbed() {
-  navigator.clipboard.writeText(document.getElementById('embedText').textContent);
-
-  const btn = document.getElementById('copyBtn');
-  if (btn) { btn.textContent='copied!'; btn.classList.add('copied'); setTimeout(()=>{ if(btn){btn.textContent='copy';btn.classList.remove('copied');} }, 1800); }
-
+function handleQuickCopy(login) {
   const quick = document.getElementById('quickCopy');
-  const quickLabel = document.getElementById('quickCopyLabel');
-  if (quick && quickLabel) {
-    quick.classList.add('copied'); quickLabel.textContent='copied!';
-    setTimeout(()=>{ quick.classList.remove('copied'); quickLabel.textContent='copy & paste in README'; }, 1800);
+  const label = document.getElementById('quickCopyLabel');
+  const icon = document.getElementById('quickCopyIcon');
+
+  if (quickCopyState === 'idle') {
+    navigator.clipboard.writeText(getEmbedCode());
+    quickCopyState = 'copied';
+    if (quick) quick.classList.add('copied');
+    if (label) label.textContent = 'copied! now paste it in your README →';
+    if (icon) icon.textContent = '✅';
+  } else {
+    window.open(`https://github.com/${login}/${login}/edit/main/README.md`, '_blank');
+    setTimeout(resetQuickCopyState, 1500);
   }
 }
 
