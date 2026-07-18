@@ -89,3 +89,6 @@ You can also hit the API directly to generate the image, without going through t
 
 ## Support
 If you like this project, please consider giving it a star ⭐
+
+## Stars
+[![GitHub stars](https://img.shields.io/github/stars/a104437ana/gitcolors?style=social&label=Stars)](https://github.com/a104437ana/gitcolors/stargazers/)
