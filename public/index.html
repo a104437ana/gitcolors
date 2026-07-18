@@ -908,12 +908,14 @@ function setRainbowMode(on) {
   if (select) select.classList.toggle('hidden', !on);
   refreshGraph();
   updateEmbedCode();
+  if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
 }
 
 function setTheme(name) {
   currentThemeName = name;
   refreshGraph();
   updateEmbedCode();
+  if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
 }
 
 function refreshGraph() {
