@@ -36,6 +36,10 @@
       --c2: #4a35a8;
       --c3: #6c63ff;
       --c4: #9d97ff;
+      --lvl1: #2a1f5c;
+      --lvl2: #2a1f5c;
+      --lvl3: #2a1f5c;
+      --lvl4: #2a1f5c;
       --shadow: 0 4px 24px rgba(0,0,0,0.35);
       --shadow-sm: 0 2px 8px rgba(0,0,0,0.25);
     }
@@ -149,6 +153,9 @@
       font-size: 0.75rem;
       line-height: 1;
       user-select: none;
+      width: 20px;
+      display: inline-block;
+      text-align: center;
     }
 
     .readme-body {
@@ -405,10 +412,51 @@
       transition: background 0.25s, border-color 0.25s, opacity 0.1s, transform 0.1s;
     }
     .day-cell:hover { opacity: 0.75; transform: scale(1.2); }
-    .day-cell[data-level="1"],
-    .day-cell[data-level="2"],
-    .day-cell[data-level="3"],
-    .day-cell[data-level="4"] { background: var(--c1); border-color: var(--c1); }
+    .day-cell[data-level="1"] { background: var(--lvl1); border-color: var(--lvl1); }
+    .day-cell[data-level="2"] { background: var(--lvl2); border-color: var(--lvl2); }
+    .day-cell[data-level="3"] { background: var(--lvl3); border-color: var(--lvl3); }
+    .day-cell[data-level="4"] { background: var(--lvl4); border-color: var(--lvl4); }
+
+    .mode-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.3rem;
+    }
+    .mode-label {
+      font-size: 0.6rem;
+      color: var(--text3);
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+      width: 20px;
+      display: inline-block;
+      text-align: center;
+    }
+    .mode-label.active { color: var(--text2); font-weight: 700; }
+    .mode-track {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      background: var(--border2);
+      border-radius: 10px;
+      cursor: pointer;
+      border: none;
+      padding: 0;
+      transition: background 0.25s;
+      flex-shrink: 0;
+    }
+    .mode-track:hover { opacity: 0.85; }
+    .mode-track.on { background: var(--accent); }
+    .mode-thumb {
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.22s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    .mode-track.on .mode-thumb { transform: translateX(16px); }
 
     .legend-row {
       display: flex; align-items: center; justify-content: flex-end;
@@ -585,6 +633,13 @@
           </button>
           <span class="toggle-icon">☀️</span>
         </div>
+        <div class="mode-toggle">
+          <span class="mode-label" id="modeSolidLabel">solid</span>
+          <button class="mode-track on" id="modeTrack" onclick="toggleGraphMode()" title="Toggle solid/levels">
+            <div class="mode-thumb"></div>
+          </button>
+          <span class="mode-label active" id="modeLevelsLabel">levels</span>
+        </div>
       </div>
     </div>
 
@@ -684,14 +739,42 @@ function hslToHex(h,s,l){
   return '#'+[hue2rgb(p,q,h+1/3),hue2rgb(p,q,h),hue2rgb(p,q,h-1/3)].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');
 }
 
+let graphMode = 'levels'; // 'mono' | 'levels'
+
+function setGraphMode(mode) {
+  graphMode = mode;
+  document.getElementById('modeSolidLabel').classList.toggle('active', mode === 'mono');
+  document.getElementById('modeLevelsLabel').classList.toggle('active', mode === 'levels');
+  document.getElementById('modeTrack').classList.toggle('on', mode === 'levels');
+  applyLiveColor(hsvToHex(pickerHue, pickerSat, pickerVal));
+}
+
+function toggleGraphMode() {
+  setGraphMode(graphMode === 'levels' ? 'mono' : 'levels');
+}
+
 function applyLiveColor(hex) {
   const root = document.documentElement;
+  const rgb = hexToRgb(hex);
+
+  if (graphMode === 'levels') {
+    root.style.setProperty('--lvl1', `rgba(${rgb},0.3)`);
+    root.style.setProperty('--lvl2', `rgba(${rgb},0.55)`);
+    root.style.setProperty('--lvl3', `rgba(${rgb},0.78)`);
+    root.style.setProperty('--lvl4', hex);
+  } else {
+    root.style.setProperty('--lvl1', hex);
+    root.style.setProperty('--lvl2', hex);
+    root.style.setProperty('--lvl3', hex);
+    root.style.setProperty('--lvl4', hex);
+  }
+
   root.style.setProperty('--c1', hex);
   root.style.setProperty('--c2', hex);
   root.style.setProperty('--c3', hex);
   root.style.setProperty('--c4', hex);
   root.style.setProperty('--accent', hex);
-  root.style.setProperty('--cell-empty', `rgba(${hexToRgb(hex)}, 0.4)`);
+  root.style.setProperty('--cell-empty', `rgba(${rgb}, 0.4)`);
   const hl = document.querySelector('.highlight');
   if (hl) hl.style.backgroundImage = `linear-gradient(135deg,${hex},${hex}dd)`;
   updateLegend();
@@ -886,14 +969,26 @@ function calcStreak(weeks) {
 function updateLegend() {
   const el = document.getElementById('graphLegend');
   if (!el) return;
-  const hex = hsvToHex(pickerHue, pickerSat, pickerVal);
-  el.innerHTML = `
-    <span class="legend-dot" style="background:transparent;border:1px solid var(--cell-empty)"></span>
-    <span>no contributions</span>
-    <span style="margin-left:0.5rem" class="legend-dot" style="background:${hex}"></span>
-    <span class="legend-dot" style="background:var(--c1)"></span>
-    <span>contributed</span>
-  `;
+
+  if (graphMode === 'levels') {
+    el.innerHTML = `
+      <span>less</span>
+      <span class="legend-dot" style="background:transparent;border:1px solid var(--cell-empty)"></span>
+      <span class="legend-dot" style="background:var(--lvl1)"></span>
+      <span class="legend-dot" style="background:var(--lvl2)"></span>
+      <span class="legend-dot" style="background:var(--lvl3)"></span>
+      <span class="legend-dot" style="background:var(--lvl4)"></span>
+      <span>more</span>
+    `;
+  } else {
+    const hex = hsvToHex(pickerHue, pickerSat, pickerVal);
+    el.innerHTML = `
+      <span class="legend-dot" style="background:transparent;border:1px solid var(--cell-empty)"></span>
+      <span>no contributions</span>
+      <span style="margin-left:0.5rem" class="legend-dot" style="background:${hex}"></span>
+      <span>contributed</span>
+    `;
+  }
 }
 
 function renderResult(data, username, isDemo) {
