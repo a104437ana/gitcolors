@@ -985,7 +985,7 @@ function updateLegend() {
     el.innerHTML = `
       <span class="legend-dot" style="background:transparent;border:1px solid var(--cell-empty)"></span>
       <span>no contributions</span>
-      <span style="margin-left:0.5rem" class="legend-dot" style="background:${hex}"></span>
+      <span class="legend-dot" style="margin-left:0.5rem;background:${hex}"></span>
       <span>contributed</span>
     `;
   }
@@ -1059,7 +1059,7 @@ function setupTooltips() {
 
 function getEmbedUrl(theme) {
   const colorHex = hsvToHex(pickerHue, pickerSat, pickerVal).replace('#','');
-  return `https://gitcolors.vercel.app/api/svg?username=${currentUsername}&color=${colorHex}&theme=${theme}`;
+  return `https://gitcolors.vercel.app/api/svg?username=${currentUsername}&color=${colorHex}&theme=${theme}&mode=${graphMode}`;
 }
 
 function getEmbedCode() {

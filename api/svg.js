@@ -6,7 +6,10 @@ const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov
 
 function getLevel(count) {
   if (count === 0) return 0;
-  return 1; // classic mono: qualquer contribuição = cor cheia, sem gradiente
+  if (count <= 2) return 1;
+  if (count <= 5) return 2;
+  if (count <= 9) return 3;
+  return 4;
 }
 
 function isValidHex(hex) {
@@ -20,10 +23,25 @@ function hexToRgb(hex) {
   return `${r},${g},${b}`;
 }
 
-function generateSVG(weeks, theme, colorHex) {
+function getFillForLevel(level, mode, activeColor, rgb, emptyStroke) {
+  if (level === 0) return { fill: 'none', stroke: emptyStroke };
+
+  if (mode === 'levels') {
+    const opacities = { 1: 0.3, 2: 0.55, 3: 0.78, 4: 1 };
+    const opacity = opacities[level];
+    const fill = opacity === 1 ? activeColor : `rgba(${rgb},${opacity})`;
+    return { fill, stroke: fill };
+  }
+
+  // solid mode: qualquer contribuição = cor cheia, sem gradiente
+  return { fill: activeColor, stroke: activeColor };
+}
+
+function generateSVG(weeks, theme, colorHex, mode) {
   const isDark = theme === 'dark';
   const activeColor = `#${colorHex}`;
-  const emptyStroke = `rgba(${hexToRgb(colorHex)},0.4)`;
+  const rgb = hexToRgb(colorHex);
+  const emptyStroke = `rgba(${rgb},0.4)`;
   const textColor = isDark ? '#ffffff' : '#000000';
   const fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif";
 
@@ -56,10 +74,11 @@ function generateSVG(weeks, theme, colorHex) {
       const x = paddingLeft + wi * step;
       const y = paddingTop + dow * step;
       const level = getLevel(day.contributionCount);
+      const { fill, stroke } = getFillForLevel(level, mode, activeColor, rgb, emptyStroke);
       if (level > 0) {
-        cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="${activeColor}" />`;
+        cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="${fill}" />`;
       } else {
-        cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="none" stroke="${emptyStroke}" stroke-width="1" />`;
+        cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="none" stroke="${stroke}" stroke-width="1" />`;
       }
     });
   });
@@ -82,6 +101,8 @@ export default async function handler(req) {
   const { searchParams } = new URL(req.url);
   const username = searchParams.get('username');
   const theme = searchParams.get('theme') === 'dark' ? 'dark' : 'light';
+  const modeParam = searchParams.get('mode');
+  const mode = (modeParam === 'mono' || modeParam === 'solid') ? 'solid' : 'levels';
   let color = (searchParams.get('color') || '6c63ff').replace('#', '');
 
   if (!username) {
@@ -139,7 +160,7 @@ export default async function handler(req) {
     }
 
     const cal = data.data.user.contributionsCollection.contributionCalendar;
-    const svg = generateSVG(cal.weeks, theme, color);
+    const svg = generateSVG(cal.weeks, theme, color, mode);
 
     return new Response(svg, {
       status: 200,
