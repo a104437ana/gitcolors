@@ -87,6 +87,17 @@ You can also hit the API directly to generate the image, without going through t
 - `mode` — `solid` (flat color) or `levels` (intensity-based)
 - `preset` — overrides `color` with a built-in palette (`rainbow`, `sunset`, `wave`, `girly`, `dev`)
 
+## 🔧 Manual Setup
+If you want an image that automatically switches between dark and light depending on the user's system theme, you can set it up like this:
+```markdown
+<picture>
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=dev" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=dev" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=dev" alt="a104437ana contributions" width="1000" />
+</picture>
+```
+Then just replace the values (`username`, `color`, `theme`, `mode`, `preset`) with whatever you'd like, following the options described in the API section above.
+
 ## Support
 If you like this project, please consider giving it a star ⭐
 
