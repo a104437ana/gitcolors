@@ -22,14 +22,14 @@
     :root, [data-theme="dark"] {
       --cell-empty: rgba(255,255,255,0.25);
       --mono-text: #ffffff;
-      --bg: #0c0c0e;
-      --surface: #131316;
+      --bg: #010409;
+      --surface: #0d1117;
       --surface2: #1a1a1f;
       --border: #252530;
       --border2: #2e2e3a;
-      --text: #e8e8f0;
-      --text2: #7a7a9a;
-      --text3: #4a4a6a;
+      --text: #f0f6fc;
+      --text2: #f0f6fc;
+      --text3: #9198a1;
       --accent: #6c63ff;
       --c0: #1a1a22;
       --c1: #2a1f5c;
@@ -41,9 +41,9 @@
     }
 
     [data-theme="light"] {
-      --bg: #f0f0f5;
+      --bg: #f6f8fa;
       --surface: #ffffff;
-      --surface2: #f5f5fa;
+      --surface2: #f6f8fa;
       --border: #dcdce8;
       --border2: #c8c8dc;
       --text: #111118;
@@ -65,7 +65,7 @@
     html { transition: background 0.25s; }
 
     body {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
@@ -166,7 +166,7 @@
     }
 
     .md-h1 {
-      font-family: 'Syne', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
       font-size: clamp(1.8rem, 5vw, 2.8rem);
       font-weight: 800;
       line-height: 1.3;
@@ -210,9 +210,9 @@
     }
 
     .md-h2 {
-      font-family: 'Syne', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 800;
       color: var(--text);
       margin-bottom: 1rem;
       padding-bottom: 0.4rem;
@@ -286,7 +286,7 @@
       border: none;
       border-bottom: 1px solid transparent;
       text-align: center;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
       font-size: 0.7rem;
       letter-spacing: 0.04em;
       color: var(--text2);
@@ -305,7 +305,7 @@
       border: 1px solid var(--border2);
       border-radius: 6px;
       padding: 0.65rem 1rem;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
       font-size: 0.85rem;
       color: var(--text);
       outline: none;
@@ -322,7 +322,7 @@
       border: none;
       border-radius: 6px;
       padding: 0.65rem 1.2rem;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
       font-size: 0.85rem;
       font-weight: 500;
       cursor: pointer;
@@ -340,9 +340,8 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .demo-note {
-      font-size: 0.72rem;
+      font-size: 0.82rem;
       color: var(--text3);
-      text-align: center;
       margin: 0.5rem 0 1.4rem;
       line-height: 1.7;
       transition: color 0.25s;
@@ -361,14 +360,15 @@
     .profile-row { display: flex; align-items: center; justify-content: space-between; gap: 0.9rem; margin-bottom: 1.2rem; }
     .profile-info { display: flex; align-items: center; gap: 0.9rem; }
     .avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border2); transition: border-color 0.25s; }
-    .profile-name { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; }
-    .profile-sub { font-size: 0.72rem; color: var(--text2); transition: color 0.25s; }
+    .profile-name { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  ; font-size: 1.1rem; font-weight: 700; }
+    .profile-sub { font-size: 0.82rem; color: var(--text2); transition: color 0.25s; }
 
     .stats-row { display: flex; gap: 1.5rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
     .stat { font-size: 0.72rem; color: var(--text2); transition: color 0.25s; }
     .stat strong {
       display: block;
-      font-family: 'Syne', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
       font-size: 1.3rem;
       font-weight: 700;
       color: var(--c3, var(--accent));
@@ -377,12 +377,10 @@
 
     .graph-container {
       position: relative;
-      background: var(--surface2);
-      border: 1px solid var(--border2);
-      border-radius: 8px;
-      padding: 2.4rem 1rem 0.8rem;
+      background:transparent;
+      padding: 1rem 1rem 0.8rem;
       overflow-x: auto;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.2rem;
       -webkit-overflow-scrolling: touch;
       transition: background 0.25s, border-color 0.25s;
       max-width: 100%;
@@ -459,7 +457,7 @@
     .quick-copy:hover { border-color: var(--accent); }
     .quick-copy.copied { border-color: #4ade80; }
     .quick-copy-tag {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
       font-size: 0.72rem;
       color: var(--text2);
       transition: color 0.25s;
@@ -491,7 +489,7 @@
       border: 1px solid var(--border2);
       border-radius: 4px;
       padding: 0.25rem 0.6rem;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
       font-size: 0.7rem; color: var(--text2);
       cursor: pointer; transition: all 0.15s;
     }
@@ -576,7 +574,8 @@
       <div class="hero-main">
         <h1 class="md-h1">git<span class="highlight">colors</span></h1>
         <p class="md-p">
-          Your GitHub contribution graph, in any color you want :)
+          Your GitHub contribution graph, in any color you want
+          <br>Easy to add to your GitHub profile README
         </p>
         <div class="search-row">
           <input id="usernameInput" class="search-input" type="text"
