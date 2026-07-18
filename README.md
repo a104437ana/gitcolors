@@ -5,7 +5,11 @@
 A simple tool to customize your GitHub contributions graph with any color palette you like. Perfect for adding a personal touch to your README or portfolio.
 
 See your graph here: https://gitcolors.vercel.app
-...
+<picture>
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&rainbow=1" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&rainbow=1" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&rainbow=1" alt="a104437ana contributions" width="1000" />
+</picture>
 
 ## ⚡ Quick Setup
 
