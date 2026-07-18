@@ -468,6 +468,21 @@
     }
     .rainbow-toggle:hover { color: var(--text2); }
     .rainbow-toggle input { cursor: pointer; accent-color: var(--accent); }
+    .theme-select {
+      margin-top: 0.3rem;
+      font-size: 0.62rem;
+      color: var(--text2);
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 5px;
+      padding: 0.2rem 0.4rem;
+      cursor: pointer;
+      outline: none;
+      max-width: 88px;
+      transition: border-color 0.2s, background 0.25s, color 0.25s;
+    }
+    .theme-select:focus { border-color: var(--accent); }
+    .theme-select.hidden { visibility: hidden; pointer-events: none; }
 
     .legend-row {
       display: flex; align-items: center; justify-content: flex-end;
@@ -651,9 +666,16 @@
           <span class="mode-label" id="modeLevelsLabel">levels</span>
         </div>
         <label class="rainbow-toggle" for="rainbowCheckbox">
-          <input type="checkbox" id="rainbowCheckbox" checked onchange="setRainbowMode(this.checked)" />
-          🌈 rainbow
+          <input type="checkbox" id="rainbowCheckbox" checked autocomplete="off" onchange="setRainbowMode(this.checked)" />
+          🎨 theme
         </label>
+        <select class="theme-select" id="themeSelect" autocomplete="off" onchange="setTheme(this.value)">
+          <option value="rainbow">🌈 rainbow</option>
+          <option value="sunset">🌅 sunset</option>
+          <option value="duotone">🌊 wave</option>
+          <option value="girly">🎀 girly</option>
+          <option value="hacker">💻 dev</option>
+        </select>
       </div>
     </div>
 
@@ -684,6 +706,7 @@ function toggleTheme() {
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('gitcolors-theme', next);
+  if (rainbowMode) refreshGraph();
 }
 
 initTheme();
@@ -731,6 +754,26 @@ function hexToRgb(hex) {
   return `${r},${g},${b}`;
 }
 
+function hexToRgbArr(hex) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+  return [parseInt(hex.slice(0,2),16), parseInt(hex.slice(2,4),16), parseInt(hex.slice(4,6),16)];
+}
+
+function interpolateStops(stops, t) {
+  t = Math.max(0, Math.min(1, t));
+  if (stops.length === 1) return stops[0];
+  const scaled = t * (stops.length - 1);
+  const idx = Math.min(stops.length - 2, Math.floor(scaled));
+  const localT = scaled - idx;
+  const c1 = hexToRgbArr(stops[idx]);
+  const c2 = hexToRgbArr(stops[idx + 1]);
+  const r = Math.round(c1[0] + (c2[0] - c1[0]) * localT);
+  const g = Math.round(c1[1] + (c2[1] - c1[1]) * localT);
+  const b = Math.round(c1[2] + (c2[2] - c1[2]) * localT);
+  return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
 function hexToHsl(hex) {
   hex = hex.replace('#','');
   if (hex.length===3) hex=hex.split('').map(c=>c+c).join('');
@@ -754,7 +797,8 @@ function hslToHex(h,s,l){
 }
 
 let graphMode = 'mono'; // 'mono' | 'levels'
-let rainbowMode = true;   // arco-íris ligado por defeito
+let rainbowMode = true;   // tema ligado por defeito
+let currentThemeName = 'rainbow';
 let lastWeeksData = null;
 
 function hueForPosition(wi, total) {
@@ -762,8 +806,112 @@ function hueForPosition(wi, total) {
   return 240 - (wi / (total - 1)) * 240; // 240 = azul, 0 = vermelho
 }
 
+const THEMES = {
+  rainbow: {
+    label: '🌈 rainbow',
+    // azul (mais antigo) -> vermelho (mais recente), opacidade/gradiente segue solid/levels
+    getCellColor(wi, total, level, mode) {
+      const hue = hueForPosition(wi, total);
+      const hex = hslToHex(hue, 70, 55);
+      const rgb = hexToRgb(hex);
+      if (level === 0) return { fill: 'transparent', stroke: `rgba(${rgb},0.35)` };
+      if (mode === 'levels') {
+        const opacities = { 1: 0.3, 2: 0.55, 3: 0.78, 4: 1 };
+        const opacity = opacities[level];
+        const color = opacity === 1 ? hex : `rgba(${rgb},${opacity})`;
+        return { fill: color, stroke: color };
+      }
+      return { fill: hex, stroke: hex };
+    },
+  },
+  sunset: {
+    label: '🌅 sunset',
+    // roxo -> rosa -> laranja -> dourado, horizontal; paleta muda consoante dark/light
+    darkStops: ['#3a0ca3', '#e0218a', '#ff6b35', '#ffd23f'],
+    lightStops: ['#8d6fc7', '#f2a6c9', '#ffb37a', '#ffe08a'],
+    getCellColor(wi, total, level, mode) {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const stops = isLight ? this.lightStops : this.darkStops;
+      const t = total <= 1 ? 0 : wi / (total - 1);
+      const hex = interpolateStops(stops, t);
+      const rgb = hexToRgb(hex);
+      if (level === 0) return { fill: 'transparent', stroke: `rgba(${rgb},0.35)` };
+      if (mode === 'levels') {
+        const opacities = { 1: 0.3, 2: 0.55, 3: 0.78, 4: 1 };
+        const opacity = opacities[level];
+        const color = opacity === 1 ? hex : `rgba(${rgb},${opacity})`;
+        return { fill: color, stroke: color };
+      }
+      return { fill: hex, stroke: hex };
+    },
+  },
+  duotone: {
+    label: '🌊 wave',
+    // matiz muda consoante o dia da semana (linha), dando efeito de "ondas" horizontais
+    stops: ['#0ea5e9', '#7c3aed'],
+    getCellColor(wi, total, level, mode, dayIdx) {
+      const t = (dayIdx || 0) / 6;
+      const hex = interpolateStops(this.stops, t);
+      const rgb = hexToRgb(hex);
+      if (level === 0) return { fill: 'transparent', stroke: `rgba(${rgb},0.35)` };
+      if (mode === 'levels') {
+        const opacities = { 1: 0.3, 2: 0.55, 3: 0.78, 4: 1 };
+        const opacity = opacities[level];
+        const color = opacity === 1 ? hex : `rgba(${rgb},${opacity})`;
+        return { fill: color, stroke: color };
+      }
+      return { fill: hex, stroke: hex };
+    },
+  },
+  girly: {
+    label: '🎀 girly',
+    // rosa -> lilás -> roxo, horizontal; mesma paleta em dark e light
+    stops: ['#ff5da2', '#e05fd0', '#a855f7', '#7c3aed'],
+    getCellColor(wi, total, level, mode) {
+      const t = total <= 1 ? 0 : wi / (total - 1);
+      const hex = interpolateStops(this.stops, t);
+      const rgb = hexToRgb(hex);
+      if (level === 0) return { fill: 'transparent', stroke: `rgba(${rgb},0.35)` };
+      if (mode === 'levels') {
+        const opacities = { 1: 0.3, 2: 0.55, 3: 0.78, 4: 1 };
+        const opacity = opacities[level];
+        const color = opacity === 1 ? hex : `rgba(${rgb},${opacity})`;
+        return { fill: color, stroke: color };
+      }
+      return { fill: hex, stroke: hex };
+    },
+  },
+  hacker: {
+    label: '💻 dev',
+    // verde matrix, varia consoante o dia da semana (linha), tipo duotone
+    // escuro em baixo (sábado), claro em cima (domingo)
+    stops: ['#1c7a3c', '#8dff6e'],
+    getCellColor(wi, total, level, mode, dayIdx) {
+      const t = 1 - (dayIdx || 0) / 6;
+      const hex = interpolateStops(this.stops, t);
+      const rgb = hexToRgb(hex);
+      if (level === 0) return { fill: 'transparent', stroke: `rgba(${rgb},0.35)` };
+      if (mode === 'levels') {
+        const opacities = { 1: 0.3, 2: 0.55, 3: 0.78, 4: 1 };
+        const opacity = opacities[level];
+        const color = opacity === 1 ? hex : `rgba(${rgb},${opacity})`;
+        return { fill: color, stroke: color };
+      }
+      return { fill: hex, stroke: hex };
+    },
+  },
+};
+
 function setRainbowMode(on) {
   rainbowMode = on;
+  const select = document.getElementById('themeSelect');
+  if (select) select.classList.toggle('hidden', !on);
+  refreshGraph();
+  updateEmbedCode();
+}
+
+function setTheme(name) {
+  currentThemeName = name;
   refreshGraph();
   updateEmbedCode();
 }
@@ -884,6 +1032,8 @@ function getWheelPos(e) {
 function uncheckRainbowBox() {
   const box = document.getElementById('rainbowCheckbox');
   if (box) box.checked = false;
+  const select = document.getElementById('themeSelect');
+  if (select) select.classList.add('hidden');
 }
 
 function pickFromEvent(e) {
@@ -999,15 +1149,10 @@ function buildGraph(weeks) {
       const lv = getLevel(day.contributionCount);
       let styleAttr = '';
       if (rainbowMode) {
-        const hue = hueForPosition(wi, weeks.length);
-        if (lv === 0) {
-          styleAttr = ` style="background:transparent;border-color:hsla(${hue},70%,55%,0.35)"`;
-        } else {
-          const opacities = {1:0.3,2:0.55,3:0.78,4:1};
-          const op = graphMode === 'levels' ? opacities[lv] : 1;
-          const color = `hsla(${hue},70%,55%,${op})`;
-          styleAttr = ` style="background:${color};border-color:${color}"`;
-        }
+        const theme = THEMES[currentThemeName] || THEMES.rainbow;
+        const dayIdx = new Date(day.date).getDay();
+        const { fill, stroke } = theme.getCellColor(wi, weeks.length, lv, graphMode, dayIdx);
+        styleAttr = ` style="background:${fill};border-color:${stroke}"`;
       }
       weeksHtml += `<div class="day-cell" data-level="${lv}" data-count="${day.contributionCount}" data-date="${day.date}"${styleAttr}></div>`;
     });
@@ -1031,7 +1176,15 @@ function updateLegend() {
   if (!el) return;
 
   if (rainbowMode) {
-    el.innerHTML = `<span>blue → red over time</span>`;
+    const messages = {
+      rainbow: 'blue → red over time',
+      sunset: 'purple → gold over time',
+      duotone: 'blue → purple by weekday',
+      girly: 'pink → purple over time',
+      hacker: 'dark green → neon green by weekday',
+    };
+    const msg = messages[currentThemeName] || messages.rainbow;
+    el.innerHTML = `<span>${msg}</span>`;
     return;
   }
 
@@ -1125,7 +1278,8 @@ function setupTooltips() {
 
 function getEmbedUrl(theme) {
   const colorHex = hsvToHex(pickerHue, pickerSat, pickerVal).replace('#','');
-  return `https://gitcolors.vercel.app/api/svg?username=${currentUsername}&color=${colorHex}&theme=${theme}&mode=${graphMode}&rainbow=${rainbowMode ? 1 : 0}`;
+  const preset = rainbowMode ? currentThemeName : 'none';
+  return `https://gitcolors.vercel.app/api/svg?username=${currentUsername}&color=${colorHex}&theme=${theme}&mode=${graphMode}&rainbow=${rainbowMode ? 1 : 0}&preset=${preset}`;
 }
 
 function getEmbedCode() {
@@ -1171,6 +1325,11 @@ function handleQuickCopy(login) {
 }
 
 drawWheel();
+rainbowMode = true;
+currentThemeName = 'rainbow';
+document.getElementById('rainbowCheckbox').checked = true;
+document.getElementById('themeSelect').value = 'rainbow';
+document.getElementById('themeSelect').classList.remove('hidden');
 loadDemo();
 const [ih, is] = hexToHsv('#ff2d95');
 pickerHue = ih; pickerSat = is;

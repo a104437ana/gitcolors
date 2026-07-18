@@ -23,6 +23,26 @@ function hexToRgb(hex) {
   return `${r},${g},${b}`;
 }
 
+function hexToRgbArr(hex) {
+  hex = hex.replace('#', '');
+  return [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
+}
+
+// interpola entre stops de cor (hex), t entre 0 e 1 — igual ao preview do frontend
+function interpolateStops(stops, t) {
+  t = Math.max(0, Math.min(1, t));
+  if (stops.length === 1) return stops[0];
+  const scaled = t * (stops.length - 1);
+  const idx = Math.min(stops.length - 2, Math.floor(scaled));
+  const localT = scaled - idx;
+  const c1 = hexToRgbArr(stops[idx]);
+  const c2 = hexToRgbArr(stops[idx + 1]);
+  const r = Math.round(c1[0] + (c2[0] - c1[0]) * localT);
+  const g = Math.round(c1[1] + (c2[1] - c1[1]) * localT);
+  const b = Math.round(c1[2] + (c2[2] - c1[2]) * localT);
+  return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
 // h em graus (0-360), s e l em 0-100. Devolve hex, tal como no preview do frontend.
 function hslToHex(h, s, l) {
   h /= 360; s /= 100; l /= 100;
@@ -52,6 +72,42 @@ function hueForPosition(wi, total) {
   if (total <= 1) return 240;
   return 240 - (wi / (total - 1)) * 240;
 }
+
+// presets nomeados, iguais à lógica do THEMES do index.html (keys internas mantidas: duotone, hacker)
+const PRESETS = {
+  sunset: {
+    darkStops: ['#3a0ca3', '#e0218a', '#ff6b35', '#ffd23f'],
+    lightStops: ['#8d6fc7', '#f2a6c9', '#ffb37a', '#ffe08a'],
+    getHex(wi, total, dow, isDark) {
+      const stops = isDark ? this.darkStops : this.lightStops;
+      const t = total <= 1 ? 0 : wi / (total - 1);
+      return interpolateStops(stops, t);
+    },
+  },
+  duotone: {
+    // "wave" no dropdown do frontend
+    stops: ['#0ea5e9', '#7c3aed'],
+    getHex(wi, total, dow) {
+      const t = (dow || 0) / 6;
+      return interpolateStops(this.stops, t);
+    },
+  },
+  girly: {
+    stops: ['#ff5da2', '#e05fd0', '#a855f7', '#7c3aed'],
+    getHex(wi, total) {
+      const t = total <= 1 ? 0 : wi / (total - 1);
+      return interpolateStops(this.stops, t);
+    },
+  },
+  hacker: {
+    // "dev" no dropdown do frontend
+    stops: ['#1c7a3c', '#8dff6e'],
+    getHex(wi, total, dow) {
+      const t = 1 - (dow || 0) / 6;
+      return interpolateStops(this.stops, t);
+    },
+  },
+};
 
 function getFillForLevel(level, mode, activeColor, rgb, emptyStroke) {
   if (level === 0) return { fill: 'none', stroke: emptyStroke };
@@ -86,7 +142,25 @@ function getFillForRainbowCell(level, mode, hue, emptyOpacity) {
   return { fill: cellHex, stroke: cellHex };
 }
 
-function generateSVG(weeks, theme, colorHex, mode, rainbow) {
+function getFillForPresetCell(level, mode, hex, emptyOpacity) {
+  const rgb = hexToRgb(hex.replace('#', ''));
+
+  if (level === 0) {
+    return { fill: 'none', stroke: `rgba(${rgb},${emptyOpacity})` };
+  }
+
+  if (mode === 'levels') {
+    const opacities = { 1: 0.3, 2: 0.55, 3: 0.78, 4: 1 };
+    const opacity = opacities[level];
+    const fill = opacity === 1 ? hex : `rgba(${rgb},${opacity})`;
+    return { fill, stroke: fill };
+  }
+
+  // solid mode: cor cheia do preset para essa célula, sem gradiente
+  return { fill: hex, stroke: hex };
+}
+
+function generateSVG(weeks, theme, colorHex, mode, rainbow, preset) {
   const isDark = theme === 'dark';
   const activeColor = `#${colorHex}`;
   const rgb = hexToRgb(colorHex);
@@ -99,6 +173,8 @@ function generateSVG(weeks, theme, colorHex, mode, rainbow) {
   const graphW = weeks.length * step;
   const W = graphW + paddingLeft + paddingRight;
   const H = 7 * step + paddingTop + paddingBottom;
+
+  const presetTheme = preset && preset !== 'rainbow' ? PRESETS[preset] : null;
 
   let cells = '';
   let monthLabels = '';
@@ -119,16 +195,23 @@ function generateSVG(weeks, theme, colorHex, mode, rainbow) {
       }
     }
 
-    const hue = rainbow ? hueForPosition(wi, weeks.length) : null;
+    const hue = rainbow && !presetTheme ? hueForPosition(wi, weeks.length) : null;
 
     week.contributionDays.forEach(day => {
       const dow = new Date(day.date).getDay();
       const x = paddingLeft + wi * step;
       const y = paddingTop + dow * step;
       const level = getLevel(day.contributionCount);
-      const { fill, stroke } = rainbow
-        ? getFillForRainbowCell(level, mode, hue, 0.35)
-        : getFillForLevel(level, mode, activeColor, rgb, emptyStroke);
+
+      let fill, stroke;
+      if (presetTheme) {
+        const cellHex = presetTheme.getHex(wi, weeks.length, dow, isDark);
+        ({ fill, stroke } = getFillForPresetCell(level, mode, cellHex, 0.35));
+      } else if (rainbow) {
+        ({ fill, stroke } = getFillForRainbowCell(level, mode, hue, 0.35));
+      } else {
+        ({ fill, stroke } = getFillForLevel(level, mode, activeColor, rgb, emptyStroke));
+      }
 
       if (level > 0) {
         cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="${fill}" />`;
@@ -160,6 +243,8 @@ export default async function handler(req) {
   const mode = (modeParam === 'mono' || modeParam === 'solid') ? 'solid' : 'levels';
   const rainbowParam = searchParams.get('rainbow');
   const rainbow = rainbowParam === '1' || rainbowParam === 'true';
+  const presetParam = searchParams.get('preset');
+  const preset = Object.prototype.hasOwnProperty.call(PRESETS, presetParam) ? presetParam : null;
   let color = (searchParams.get('color') || '6c63ff').replace('#', '');
 
   if (!username) {
@@ -217,7 +302,7 @@ export default async function handler(req) {
     }
 
     const cal = data.data.user.contributionsCollection.contributionCalendar;
-    const svg = generateSVG(cal.weeks, theme, color, mode, rainbow);
+    const svg = generateSVG(cal.weeks, theme, color, mode, rainbow, preset);
 
     return new Response(svg, {
       status: 200,
