@@ -13,18 +13,10 @@ See your graph here: https://gitcolors.vercel.app
 
 ## ⚡ Quick Setup
 
-1. Go to ...
+1. Go to https://gitcolors.vercel.app
 2. Enter your GitHub username  
-3. Copy the generated code  
+3. Copy the image
 4. Paste into your README
-
-## 🔧 Manual Setup
-1. Copy the code below  
-```markdown
-...
-```
-2. Replace `your-github-username` with your GitHub username
-3. Paste into your README
 
 ## Features
 - 🌈 GitHub contributions graph in any color you want
