@@ -24,6 +24,7 @@ See your graph here: https://gitcolors.vercel.app
 - 🌗 Supports both light and dark themes
 - ⚡ Easy to integrate into any README or portfolio
 - 💻 Dedicated website to generate and view your graph
+- ✨ Beautiful preset themes like Rainbow, Sunset and more
 
 ## Support
 If you like this project, please consider giving it a star ⭐
