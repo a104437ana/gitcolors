@@ -672,9 +672,9 @@
         <select class="theme-select" id="themeSelect" autocomplete="off" onchange="setTheme(this.value)">
           <option value="rainbow">🌈 rainbow</option>
           <option value="sunset">🌅 sunset</option>
-          <option value="duotone">🌊 wave</option>
+          <option value="wave">🌊 wave</option>
           <option value="girly">🎀 girly</option>
-          <option value="hacker">💻 dev</option>
+          <option value="dev">💻 dev</option>
         </select>
       </div>
     </div>
@@ -845,7 +845,7 @@ const THEMES = {
       return { fill: hex, stroke: hex };
     },
   },
-  duotone: {
+  wave: {
     label: '🌊 wave',
     // matiz muda consoante o dia da semana (linha), dando efeito de "ondas" horizontais
     stops: ['#0ea5e9', '#7c3aed'],
@@ -881,9 +881,9 @@ const THEMES = {
       return { fill: hex, stroke: hex };
     },
   },
-  hacker: {
+  dev: {
     label: '💻 dev',
-    // verde matrix, varia consoante o dia da semana (linha), tipo duotone
+    // verde matrix, varia consoante o dia da semana (linha), tipo wave
     // escuro em baixo (sábado), claro em cima (domingo)
     stops: ['#1c7a3c', '#8dff6e'],
     getCellColor(wi, total, level, mode, dayIdx) {
@@ -1179,9 +1179,9 @@ function updateLegend() {
     const messages = {
       rainbow: 'blue → red over time',
       sunset: 'purple → gold over time',
-      duotone: 'blue → purple by weekday',
+      wave: 'blue → purple by weekday',
       girly: 'pink → purple over time',
-      hacker: 'dark green → neon green by weekday',
+      dev: 'dark green → neon green by weekday',
     };
     const msg = messages[currentThemeName] || messages.rainbow;
     el.innerHTML = `<span>${msg}</span>`;
@@ -1279,7 +1279,7 @@ function setupTooltips() {
 function getEmbedUrl(theme) {
   const colorHex = hsvToHex(pickerHue, pickerSat, pickerVal).replace('#','');
   const preset = rainbowMode ? currentThemeName : 'none';
-  return `https://gitcolors.vercel.app/api/svg?username=${currentUsername}&color=${colorHex}&theme=${theme}&mode=${graphMode}&rainbow=${rainbowMode ? 1 : 0}&preset=${preset}`;
+  return `https://gitcolors.vercel.app/api/svg?username=${currentUsername}&color=${colorHex}&theme=${theme}&mode=${graphMode}&preset=${preset}`;
 }
 
 function getEmbedCode() {

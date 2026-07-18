@@ -73,7 +73,7 @@ function hueForPosition(wi, total) {
   return 240 - (wi / (total - 1)) * 240;
 }
 
-// presets nomeados, iguais à lógica do THEMES do index.html (keys internas mantidas: duotone, hacker)
+// presets nomeados, iguais à lógica do THEMES do index.html
 const PRESETS = {
   sunset: {
     darkStops: ['#3a0ca3', '#e0218a', '#ff6b35', '#ffd23f'],
@@ -84,8 +84,7 @@ const PRESETS = {
       return interpolateStops(stops, t);
     },
   },
-  duotone: {
-    // "wave" no dropdown do frontend
+  wave: {
     stops: ['#0ea5e9', '#7c3aed'],
     getHex(wi, total, dow) {
       const t = (dow || 0) / 6;
@@ -99,8 +98,7 @@ const PRESETS = {
       return interpolateStops(this.stops, t);
     },
   },
-  hacker: {
-    // "dev" no dropdown do frontend
+  dev: {
     stops: ['#1c7a3c', '#8dff6e'],
     getHex(wi, total, dow) {
       const t = 1 - (dow || 0) / 6;
@@ -160,7 +158,7 @@ function getFillForPresetCell(level, mode, hex, emptyOpacity) {
   return { fill: hex, stroke: hex };
 }
 
-function generateSVG(weeks, theme, colorHex, mode, rainbow, preset) {
+function generateSVG(weeks, theme, colorHex, mode, preset) {
   const isDark = theme === 'dark';
   const activeColor = `#${colorHex}`;
   const rgb = hexToRgb(colorHex);
@@ -174,7 +172,8 @@ function generateSVG(weeks, theme, colorHex, mode, rainbow, preset) {
   const W = graphW + paddingLeft + paddingRight;
   const H = 7 * step + paddingTop + paddingBottom;
 
-  const presetTheme = preset && preset !== 'rainbow' ? PRESETS[preset] : null;
+  const isRainbow = preset === 'rainbow';
+  const presetTheme = preset && !isRainbow ? PRESETS[preset] : null;
 
   let cells = '';
   let monthLabels = '';
@@ -195,7 +194,7 @@ function generateSVG(weeks, theme, colorHex, mode, rainbow, preset) {
       }
     }
 
-    const hue = rainbow && !presetTheme ? hueForPosition(wi, weeks.length) : null;
+    const hue = isRainbow && !presetTheme ? hueForPosition(wi, weeks.length) : null;
 
     week.contributionDays.forEach(day => {
       const dow = new Date(day.date).getDay();
@@ -207,7 +206,7 @@ function generateSVG(weeks, theme, colorHex, mode, rainbow, preset) {
       if (presetTheme) {
         const cellHex = presetTheme.getHex(wi, weeks.length, dow, isDark);
         ({ fill, stroke } = getFillForPresetCell(level, mode, cellHex, 0.35));
-      } else if (rainbow) {
+      } else if (isRainbow) {
         ({ fill, stroke } = getFillForRainbowCell(level, mode, hue, 0.35));
       } else {
         ({ fill, stroke } = getFillForLevel(level, mode, activeColor, rgb, emptyStroke));
@@ -241,10 +240,9 @@ export default async function handler(req) {
   const theme = searchParams.get('theme') === 'dark' ? 'dark' : 'light';
   const modeParam = searchParams.get('mode');
   const mode = (modeParam === 'mono' || modeParam === 'solid') ? 'solid' : 'levels';
-  const rainbowParam = searchParams.get('rainbow');
-  const rainbow = rainbowParam === '1' || rainbowParam === 'true';
   const presetParam = searchParams.get('preset');
-  const preset = Object.prototype.hasOwnProperty.call(PRESETS, presetParam) ? presetParam : null;
+  const VALID_PRESETS = ['rainbow', 'sunset', 'wave', 'girly', 'dev'];
+  const preset = VALID_PRESETS.includes(presetParam) ? presetParam : null;
   let color = (searchParams.get('color') || '6c63ff').replace('#', '');
 
   if (!username) {
@@ -302,7 +300,7 @@ export default async function handler(req) {
     }
 
     const cal = data.data.user.contributionsCollection.contributionCalendar;
-    const svg = generateSVG(cal.weeks, theme, color, mode, rainbow, preset);
+    const svg = generateSVG(cal.weeks, theme, color, mode, preset);
 
     return new Response(svg, {
       status: 200,
