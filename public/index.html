@@ -809,6 +809,7 @@ function hueForPosition(wi, total) {
 const THEMES = {
   rainbow: {
     label: '🌈 rainbow',
+    accent: '#ff2d95',
     // azul (mais antigo) -> vermelho (mais recente), opacidade/gradiente segue solid/levels
     getCellColor(wi, total, level, mode) {
       const hue = hueForPosition(wi, total);
@@ -826,6 +827,7 @@ const THEMES = {
   },
   sunset: {
     label: '🌅 sunset',
+    accent: '#ff2d95',
     // roxo -> rosa -> laranja -> dourado, horizontal; paleta muda consoante dark/light
     darkStops: ['#3a0ca3', '#e0218a', '#ff6b35', '#ffd23f'],
     lightStops: ['#8d6fc7', '#f2a6c9', '#ffb37a', '#ffe08a'],
@@ -847,6 +849,7 @@ const THEMES = {
   },
   wave: {
     label: '🌊 wave',
+    accent: '#0ea5e9',
     // matiz muda consoante o dia da semana (linha), dando efeito de "ondas" horizontais
     stops: ['#0ea5e9', '#7c3aed'],
     getCellColor(wi, total, level, mode, dayIdx) {
@@ -865,6 +868,7 @@ const THEMES = {
   },
   girly: {
     label: '🎀 girly',
+    accent: '#ff2d95',
     // rosa -> lilás -> roxo, horizontal; mesma paleta em dark e light
     stops: ['#ff5da2', '#e05fd0', '#a855f7', '#7c3aed'],
     getCellColor(wi, total, level, mode) {
@@ -883,6 +887,7 @@ const THEMES = {
   },
   dev: {
     label: '💻 dev',
+    accent: '#3ddc5b',
     // verde matrix, varia consoante o dia da semana (linha), tipo wave
     // escuro em baixo (sábado), claro em cima (domingo)
     stops: ['#1c7a3c', '#8dff6e'],
@@ -906,6 +911,12 @@ function setRainbowMode(on) {
   rainbowMode = on;
   const select = document.getElementById('themeSelect');
   if (select) select.classList.toggle('hidden', !on);
+  if (on) {
+    const theme = THEMES[currentThemeName] || THEMES.rainbow;
+    applyLiveColor(theme.accent);
+  } else {
+    applyLiveColor(hsvToHex(pickerHue, pickerSat, pickerVal));
+  }
   refreshGraph();
   updateEmbedCode();
   if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
@@ -913,6 +924,8 @@ function setRainbowMode(on) {
 
 function setTheme(name) {
   currentThemeName = name;
+  const theme = THEMES[name] || THEMES.rainbow;
+  applyLiveColor(theme.accent);
   refreshGraph();
   updateEmbedCode();
   if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
@@ -932,7 +945,12 @@ function setGraphMode(mode) {
   document.getElementById('modeSolidLabel').classList.toggle('active', mode === 'mono');
   document.getElementById('modeLevelsLabel').classList.toggle('active', mode === 'levels');
   document.getElementById('modeTrack').classList.toggle('on', mode === 'levels');
-  applyLiveColor(hsvToHex(pickerHue, pickerSat, pickerVal));
+  if (rainbowMode) {
+    const theme = THEMES[currentThemeName] || THEMES.rainbow;
+    applyLiveColor(theme.accent);
+  } else {
+    applyLiveColor(hsvToHex(pickerHue, pickerSat, pickerVal));
+  }
   refreshGraph();
 }
 
@@ -1336,6 +1354,7 @@ loadDemo();
 const [ih, is] = hexToHsv('#ff2d95');
 pickerHue = ih; pickerSat = is;
 syncWheelCursor();
+applyLiveColor(THEMES.rainbow.accent);
 </script>
 </body>
 </html>
