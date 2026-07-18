@@ -23,6 +23,36 @@ function hexToRgb(hex) {
   return `${r},${g},${b}`;
 }
 
+// h em graus (0-360), s e l em 0-100. Devolve hex, tal como no preview do frontend.
+function hslToHex(h, s, l) {
+  h /= 360; s /= 100; l /= 100;
+  const hue2rgb = (p, q, t) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1/6) return p + (q - p) * 6 * t;
+    if (t < 1/2) return q;
+    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+    return p;
+  };
+  let r, g, b;
+  if (s === 0) {
+    r = g = b = l;
+  } else {
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1/3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1/3);
+  }
+  return '#' + [r, g, b].map(x => Math.round(x * 255).toString(16).padStart(2, '0')).join('');
+}
+
+// azul (240) à esquerda -> vermelho (0) à direita, igual ao preview do frontend
+function hueForPosition(wi, total) {
+  if (total <= 1) return 240;
+  return 240 - (wi / (total - 1)) * 240;
+}
+
 function getFillForLevel(level, mode, activeColor, rgb, emptyStroke) {
   if (level === 0) return { fill: 'none', stroke: emptyStroke };
 
@@ -37,7 +67,26 @@ function getFillForLevel(level, mode, activeColor, rgb, emptyStroke) {
   return { fill: activeColor, stroke: activeColor };
 }
 
-function generateSVG(weeks, theme, colorHex, mode) {
+function getFillForRainbowCell(level, mode, hue, emptyOpacity) {
+  const cellHex = hslToHex(hue, 70, 55);
+  const cellRgb = hexToRgb(cellHex.slice(1));
+
+  if (level === 0) {
+    return { fill: 'none', stroke: `rgba(${cellRgb},${emptyOpacity})` };
+  }
+
+  if (mode === 'levels') {
+    const opacities = { 1: 0.3, 2: 0.55, 3: 0.78, 4: 1 };
+    const opacity = opacities[level];
+    const fill = opacity === 1 ? cellHex : `rgba(${cellRgb},${opacity})`;
+    return { fill, stroke: fill };
+  }
+
+  // solid mode: cor cheia do arco-íris para essa coluna, sem gradiente
+  return { fill: cellHex, stroke: cellHex };
+}
+
+function generateSVG(weeks, theme, colorHex, mode, rainbow) {
   const isDark = theme === 'dark';
   const activeColor = `#${colorHex}`;
   const rgb = hexToRgb(colorHex);
@@ -69,12 +118,18 @@ function generateSVG(weeks, theme, colorHex, mode) {
         lastLabelWeek = wi;
       }
     }
+
+    const hue = rainbow ? hueForPosition(wi, weeks.length) : null;
+
     week.contributionDays.forEach(day => {
       const dow = new Date(day.date).getDay();
       const x = paddingLeft + wi * step;
       const y = paddingTop + dow * step;
       const level = getLevel(day.contributionCount);
-      const { fill, stroke } = getFillForLevel(level, mode, activeColor, rgb, emptyStroke);
+      const { fill, stroke } = rainbow
+        ? getFillForRainbowCell(level, mode, hue, 0.35)
+        : getFillForLevel(level, mode, activeColor, rgb, emptyStroke);
+
       if (level > 0) {
         cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="${fill}" />`;
       } else {
@@ -103,6 +158,8 @@ export default async function handler(req) {
   const theme = searchParams.get('theme') === 'dark' ? 'dark' : 'light';
   const modeParam = searchParams.get('mode');
   const mode = (modeParam === 'mono' || modeParam === 'solid') ? 'solid' : 'levels';
+  const rainbowParam = searchParams.get('rainbow');
+  const rainbow = rainbowParam === '1' || rainbowParam === 'true';
   let color = (searchParams.get('color') || '6c63ff').replace('#', '');
 
   if (!username) {
@@ -160,7 +217,7 @@ export default async function handler(req) {
     }
 
     const cal = data.data.user.contributionsCollection.contributionCalendar;
-    const svg = generateSVG(cal.weeks, theme, color, mode);
+    const svg = generateSVG(cal.weeks, theme, color, mode, rainbow);
 
     return new Response(svg, {
       status: 200,

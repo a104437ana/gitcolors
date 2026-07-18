@@ -256,7 +256,6 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      margin-top: 0.15rem;
     }
     .wheel-ring {
       position: relative;
@@ -421,7 +420,6 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      margin-top: 0.3rem;
     }
     .mode-label {
       font-size: 0.6rem;
@@ -457,6 +455,19 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.3);
     }
     .mode-track.on .mode-thumb { transform: translateX(16px); }
+    .rainbow-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.6rem;
+      color: var(--text3);
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      margin-top: 0.1rem;
+      transition: color 0.2s;
+    }
+    .rainbow-toggle:hover { color: var(--text2); }
+    .rainbow-toggle input { cursor: pointer; accent-color: var(--accent); }
 
     .legend-row {
       display: flex; align-items: center; justify-content: flex-end;
@@ -625,7 +636,6 @@
         </div>
         <input class="wheel-hex" id="wheelHex" type="text"
           value="#ff2d95" maxlength="7" spellcheck="false" />
-        <br>
         <div class="wheel-theme-toggle">
           <span class="toggle-icon">🌙</span>
           <button class="toggle-track" onclick="toggleTheme()" title="Toggle theme">
@@ -634,12 +644,16 @@
           <span class="toggle-icon">☀️</span>
         </div>
         <div class="mode-toggle">
-          <span class="mode-label" id="modeSolidLabel">solid</span>
-          <button class="mode-track on" id="modeTrack" onclick="toggleGraphMode()" title="Toggle solid/levels">
+          <span class="mode-label active" id="modeSolidLabel">solid</span>
+          <button class="mode-track" id="modeTrack" onclick="toggleGraphMode()" title="Toggle solid/levels">
             <div class="mode-thumb"></div>
           </button>
-          <span class="mode-label active" id="modeLevelsLabel">levels</span>
+          <span class="mode-label" id="modeLevelsLabel">levels</span>
         </div>
+        <label class="rainbow-toggle" for="rainbowCheckbox">
+          <input type="checkbox" id="rainbowCheckbox" checked onchange="setRainbowMode(this.checked)" />
+          🌈 rainbow
+        </label>
       </div>
     </div>
 
@@ -739,7 +753,29 @@ function hslToHex(h,s,l){
   return '#'+[hue2rgb(p,q,h+1/3),hue2rgb(p,q,h),hue2rgb(p,q,h-1/3)].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');
 }
 
-let graphMode = 'levels'; // 'mono' | 'levels'
+let graphMode = 'mono'; // 'mono' | 'levels'
+let rainbowMode = true;   // arco-íris ligado por defeito
+let lastWeeksData = null;
+
+function hueForPosition(wi, total) {
+  if (total <= 1) return 240;
+  return 240 - (wi / (total - 1)) * 240; // 240 = azul, 0 = vermelho
+}
+
+function setRainbowMode(on) {
+  rainbowMode = on;
+  refreshGraph();
+  updateEmbedCode();
+}
+
+function refreshGraph() {
+  if (!lastWeeksData) return;
+  const container = document.querySelector('.graph-container');
+  if (!container) return;
+  container.innerHTML = `${buildGraph(lastWeeksData)}<div class="legend-row" id="graphLegend"></div>`;
+  setupTooltips();
+  updateLegend();
+}
 
 function setGraphMode(mode) {
   graphMode = mode;
@@ -747,6 +783,7 @@ function setGraphMode(mode) {
   document.getElementById('modeLevelsLabel').classList.toggle('active', mode === 'levels');
   document.getElementById('modeTrack').classList.toggle('on', mode === 'levels');
   applyLiveColor(hsvToHex(pickerHue, pickerSat, pickerVal));
+  refreshGraph();
 }
 
 function toggleGraphMode() {
@@ -844,10 +881,18 @@ function getWheelPos(e) {
   return [angle, Math.min(1, dist/r)];
 }
 
+function uncheckRainbowBox() {
+  const box = document.getElementById('rainbowCheckbox');
+  if (box) box.checked = false;
+}
+
 function pickFromEvent(e) {
   const [h, s] = getWheelPos(e);
   pickerHue = h; pickerSat = s;
+  rainbowMode = false;
+  uncheckRainbowBox();
   syncWheelCursor();
+  refreshGraph();
 }
 
 wheelRing.addEventListener('mousedown', e => { draggingWheel = true; pickFromEvent(e); });
@@ -865,7 +910,10 @@ function validateWheelHex() {
   if (/^#[0-9a-fA-F]{6}$/i.test(v)) {
     const [h, s] = hexToHsv(v);
     pickerHue = h; pickerSat = s;
+    rainbowMode = false;
+    uncheckRainbowBox();
     syncWheelCursor();
+    refreshGraph();
   } else {
     wheelHex.value = hsvToHex(pickerHue, pickerSat, pickerVal);
   }
@@ -943,13 +991,25 @@ function buildGraph(weeks) {
   dayLabels += '</div>';
 
   let weeksHtml = '<div class="weeks">';
-  weeks.forEach(week => {
+  weeks.forEach((week, wi) => {
     weeksHtml += '<div class="week">';
     const fd = week.contributionDays[0];
     if (fd) { const wd=new Date(fd.date).getDay(); for(let i=0;i<wd;i++) weeksHtml+=`<div class="day-cell" style="visibility:hidden"></div>`; }
     week.contributionDays.forEach(day => {
       const lv = getLevel(day.contributionCount);
-      weeksHtml += `<div class="day-cell" data-level="${lv}" data-count="${day.contributionCount}" data-date="${day.date}"></div>`;
+      let styleAttr = '';
+      if (rainbowMode) {
+        const hue = hueForPosition(wi, weeks.length);
+        if (lv === 0) {
+          styleAttr = ` style="background:transparent;border-color:hsla(${hue},70%,55%,0.35)"`;
+        } else {
+          const opacities = {1:0.3,2:0.55,3:0.78,4:1};
+          const op = graphMode === 'levels' ? opacities[lv] : 1;
+          const color = `hsla(${hue},70%,55%,${op})`;
+          styleAttr = ` style="background:${color};border-color:${color}"`;
+        }
+      }
+      weeksHtml += `<div class="day-cell" data-level="${lv}" data-count="${day.contributionCount}" data-date="${day.date}"${styleAttr}></div>`;
     });
     weeksHtml += '</div>';
   });
@@ -969,6 +1029,11 @@ function calcStreak(weeks) {
 function updateLegend() {
   const el = document.getElementById('graphLegend');
   if (!el) return;
+
+  if (rainbowMode) {
+    el.innerHTML = `<span>blue → red over time</span>`;
+    return;
+  }
 
   if (graphMode === 'levels') {
     el.innerHTML = `
@@ -994,6 +1059,7 @@ function updateLegend() {
 function renderResult(data, username, isDemo) {
   const user = data.user;
   const cal = user.contributionsCollection.contributionCalendar;
+  lastWeeksData = cal.weeks;
 
   const demoNote = isDemo
     ? `<p class="demo-note">showing an example (@${username}) —<br class="demo-note-break"> <u>enter your username above</u> to generate your own GitHub contribution graph...</p>`
@@ -1059,7 +1125,7 @@ function setupTooltips() {
 
 function getEmbedUrl(theme) {
   const colorHex = hsvToHex(pickerHue, pickerSat, pickerVal).replace('#','');
-  return `https://gitcolors.vercel.app/api/svg?username=${currentUsername}&color=${colorHex}&theme=${theme}&mode=${graphMode}`;
+  return `https://gitcolors.vercel.app/api/svg?username=${currentUsername}&color=${colorHex}&theme=${theme}&mode=${graphMode}&rainbow=${rainbowMode ? 1 : 0}`;
 }
 
 function getEmbedCode() {
