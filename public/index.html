@@ -58,7 +58,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body { 
-      overflow-x: hidden; /* Impede qualquer scroll horizontal indesejado */
+      overflow-x: hidden;
       width: 100%;
     }
 
@@ -91,7 +91,6 @@
       width: 100%;
     }
 
-    /* ─── README CHROME ──────────────────────────────────────────── */
     .readme-bar {
       display: flex;
       align-items: center;
@@ -110,7 +109,6 @@
     .readme-dot.g { background: #28c840; }
     .readme-filename { font-size: 0.7rem; color: var(--text3); transition: color 0.25s; }
 
-    /* ─── THEME TOGGLE ───────────────────────────────────────────── */
     .theme-toggle {
       margin-left: auto;
       display: flex;
@@ -153,7 +151,6 @@
       user-select: none;
     }
 
-    /* ─── README BODY ────────────────────────────────────────────── */
     .readme-body {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -221,7 +218,6 @@
     }
     .md-h2::before { content: '## '; color: var(--text3); transition: color 0.25s; }
 
-    /* ─── HERO (Alinhamento nas extremidades) ────────────────────── */
     .hero-flex {
       display: flex;
       flex-wrap: wrap;
@@ -234,13 +230,12 @@
     .hero-main {
       flex: 1 1 500px;
       min-width: 0;
-      margin-right: 3rem; /* Espaço entre o input e a roda */
+      margin-right: 3rem;
     }
     .hero-main .md-h1,
     .hero-main .md-p { text-align: left; }
     .hero-main .search-row { justify-content: flex-start; }
 
-    /* ─── COLOR WHEEL ────────────────────────────────────────────── */
     .wheel-widget {
       flex: 0 0 auto;
       display: flex;
@@ -248,7 +243,7 @@
       align-items: center;
       justify-content: center;
       gap: 0.6rem;
-      margin-right: 2rem; /* Afasta a roda da parede direita da caixa principal */
+      margin-right: 2rem;
     }
     .wheel-theme-toggle {
       display: flex;
@@ -297,7 +292,6 @@
     .wheel-hex:hover { color: var(--text); }
     .wheel-hex:focus { border-color: var(--accent); color: var(--text); }
 
-    /* ─── SEARCH ─────────────────────────────────────────────────── */
     .search-row { display: flex; gap: 0.5rem; margin: 1.75rem 0 1.5rem; width: 100%;}
     .search-input {
       flex: 1;
@@ -340,7 +334,6 @@
       box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 30%, transparent);
     }
 
-    /* ─── RESULT / GRAPH ─────────────────────────────────────────── */
     #result { margin-top: 0; max-width: 100%; }
 
     .loader { font-size: 0.8rem; color: var(--text2); padding: 2rem 0; text-align: center; transition: color 0.25s; }
@@ -445,7 +438,6 @@
       transition: background 0.25s, color 0.25s, border-color 0.25s;
     }
 
-    /* ─── EMBED ──────────────────────────────────────────────────── */
     .quick-copy-wrap {
       display: flex;
       justify-content: center;
@@ -486,7 +478,6 @@
     }
     .quick-copy-icon { font-size: 0.9rem; }
 
-    /* ─── DEMO STAR CTA (shown after every result, demo or real) ──── */
     .demo-star-cta {
       display: flex;
       align-items: center;
@@ -520,7 +511,6 @@
     }
     .demo-star-btn-icon { font-size: 0.95rem; line-height: 1; }
 
-    /* ─── FOOTER ─────────────────────────────────────────────────── */
     .about-section {
       margin-top: 2.5rem; padding-top: 0;
       font-size: 0.75rem; color: var(--text3);
@@ -613,10 +603,6 @@
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════
-// THEME
-// ═══════════════════════════════════════════════════
-
 function initTheme() {
   const saved = localStorage.getItem('gitcolors-theme');
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -632,11 +618,6 @@ function toggleTheme() {
 }
 
 initTheme();
-
-
-// ═══════════════════════════════════════════════════
-// COLOR MATH
-// ═══════════════════════════════════════════════════
 
 function hexToHsv(hex) {
   hex = hex.replace('#','');
@@ -672,6 +653,15 @@ function hsvToHex(h, s, v) {
   return '#'+[r,g,b].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');
 }
 
+function hexToRgb(hex) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+  const r = parseInt(hex.slice(0,2),16);
+  const g = parseInt(hex.slice(2,4),16);
+  const b = parseInt(hex.slice(4,6),16);
+  return `${r},${g},${b}`;
+}
+
 function hexToHsl(hex) {
   hex = hex.replace('#','');
   if (hex.length===3) hex=hex.split('').map(c=>c+c).join('');
@@ -701,17 +691,13 @@ function applyLiveColor(hex) {
   root.style.setProperty('--c3', hex);
   root.style.setProperty('--c4', hex);
   root.style.setProperty('--accent', hex);
+  root.style.setProperty('--cell-empty', `rgba(${hexToRgb(hex)}, 0.4)`);
   const hl = document.querySelector('.highlight');
   if (hl) hl.style.backgroundImage = `linear-gradient(135deg,${hex},${hex}dd)`;
   updateLegend();
   updateEmbedCode();
   if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
 }
-
-
-// ═══════════════════════════════════════════════════
-// ALWAYS-VISIBLE COLOR WHEEL
-// ═══════════════════════════════════════════════════
 
 let pickerHue = 330;
 let pickerSat = 0.82;
@@ -804,11 +790,6 @@ function validateWheelHex() {
 
 
 let currentUsername = '';
-
-
-// ═══════════════════════════════════════════════════
-// GRAPH
-// ═══════════════════════════════════════════════════
 
 const API_BASE = 'https://sakura-garden.vercel.app/api/contributions';
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -981,11 +962,6 @@ function setupTooltips() {
   });
 }
 
-
-// ═══════════════════════════════════════════════════
-// EMBED
-// ═══════════════════════════════════════════════════
-
 function getEmbedUrl(theme) {
   const colorHex = hsvToHex(pickerHue, pickerSat, pickerVal).replace('#','');
   return `https://gitcolors.vercel.app/api/svg?username=${currentUsername}&color=${colorHex}&theme=${theme}`;
@@ -1003,7 +979,7 @@ function updateEmbedCode() {
 }
 
 
-let quickCopyState = 'idle'; // 'idle' | 'copied'
+let quickCopyState = 'idle';
 
 function resetQuickCopyState() {
   quickCopyState = 'idle';
@@ -1032,11 +1008,6 @@ function handleQuickCopy(login) {
     setTimeout(resetQuickCopyState, 1500);
   }
 }
-
-
-// ═══════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════
 
 drawWheel();
 loadDemo();

@@ -13,10 +13,17 @@ function isValidHex(hex) {
   return /^[0-9a-fA-F]{6}$/.test(hex);
 }
 
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  return `${r},${g},${b}`;
+}
+
 function generateSVG(weeks, theme, colorHex) {
   const isDark = theme === 'dark';
   const activeColor = `#${colorHex}`;
-  const emptyStroke = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.25)';
+  const emptyStroke = `rgba(${hexToRgb(colorHex)},0.4)`;
   const textColor = isDark ? '#ffffff' : '#000000';
   const fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif";
 
