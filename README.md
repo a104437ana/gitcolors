@@ -75,7 +75,7 @@ See your graph here: https://gitcolors.vercel.app
 - :octocat: Updates automatically based on your GitHub activity
 - 🌗 Supports both light and dark themes
 - ⚡ Easy to integrate into any README or portfolio
-- 💻 Dedicated website to generate and view your graph
+- 💻 Dedicated [website](https://gitcolors.vercel.app) to generate and view your graph
 - ✨ Beautiful preset themes like Rainbow, Sunset and more
 - 📊 View contributions by intensity or simply contributed / not contributed
 
