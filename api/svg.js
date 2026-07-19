@@ -73,6 +73,52 @@ function hueForPosition(wi, total) {
   return 240 - (wi / (total - 1)) * 240;
 }
 
+function hexToHsl(hex) {
+  hex = hex.replace('#', '');
+  const r = parseInt(hex.slice(0, 2), 16) / 255;
+  const g = parseInt(hex.slice(2, 4), 16) / 255;
+  const b = parseInt(hex.slice(4, 6), 16) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h, s;
+  const l = (max + min) / 2;
+  if (max === min) { h = s = 0; }
+  else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / d + 2) / 6; break;
+      case b: h = ((r - g) / d + 4) / 6; break;
+    }
+  }
+  return [h * 360, s * 100, l * 100];
+}
+
+const RAINBOW2_PINK_HEX = '#ff2d95';
+
+// roxo -> azul -> vermelho -> rosa (#ff2d95, exato); a secção interior replica o rainbow original
+function rainbow2Hex(wi, total) {
+  const t = total <= 1 ? 0 : wi / (total - 1);
+  const segStart = 0.15, segEnd = 0.85;
+  if (t < segStart) {
+    const localT = t / segStart;
+    const hue = 280 - localT * (280 - 240);
+    return hslToHex(hue, 70, 55);
+  }
+  if (t > segEnd) {
+    const localT = (t - segEnd) / (1 - segEnd);
+    const [pinkH, pinkS, pinkL] = hexToHsl(RAINBOW2_PINK_HEX);
+    let hue = localT * (pinkH - 360);
+    if (hue < 0) hue += 360;
+    const sat = 70 + (pinkS - 70) * localT;
+    const light = 55 + (pinkL - 55) * localT;
+    return hslToHex(hue, sat, light);
+  }
+  const localT = (t - segStart) / (segEnd - segStart);
+  const hue = 240 - localT * 240;
+  return hslToHex(hue, 70, 55);
+}
+
 // presets nomeados, iguais à lógica do THEMES do index.html
 const PRESETS = {
   sunset: {
@@ -172,7 +218,7 @@ function generateSVG(weeks, theme, colorHex, mode, preset) {
   const W = graphW + paddingLeft + paddingRight;
   const H = 7 * step + paddingTop + paddingBottom;
 
-  const isRainbow = preset === 'rainbow';
+  const isRainbow = preset === 'rainbow' || preset === 'rainbow2';
   const presetTheme = preset && !isRainbow ? PRESETS[preset] : null;
 
   let cells = '';
@@ -194,7 +240,12 @@ function generateSVG(weeks, theme, colorHex, mode, preset) {
       }
     }
 
-    const hue = isRainbow && !presetTheme ? hueForPosition(wi, weeks.length) : null;
+    const hue = (isRainbow && !presetTheme && preset === 'rainbow2')
+      ? hueForPosition(wi, weeks.length)
+      : null;
+    const purplePinkCellHex = (isRainbow && !presetTheme && preset === 'rainbow')
+      ? rainbow2Hex(wi, weeks.length)
+      : null;
 
     week.contributionDays.forEach(day => {
       const dow = new Date(day.date).getDay();
@@ -206,6 +257,8 @@ function generateSVG(weeks, theme, colorHex, mode, preset) {
       if (presetTheme) {
         const cellHex = presetTheme.getHex(wi, weeks.length, dow, isDark);
         ({ fill, stroke } = getFillForPresetCell(level, mode, cellHex, 0.35));
+      } else if (purplePinkCellHex) {
+        ({ fill, stroke } = getFillForPresetCell(level, mode, purplePinkCellHex, 0.35));
       } else if (isRainbow) {
         ({ fill, stroke } = getFillForRainbowCell(level, mode, hue, 0.35));
       } else {
@@ -241,7 +294,7 @@ export default async function handler(req) {
   const modeParam = searchParams.get('mode');
   const mode = (modeParam === 'mono' || modeParam === 'solid') ? 'solid' : 'levels';
   const presetParam = searchParams.get('preset');
-  const VALID_PRESETS = ['rainbow', 'sunset', 'wave', 'girly', 'dev'];
+  const VALID_PRESETS = ['rainbow', 'rainbow2', 'sunset', 'wave', 'girly', 'dev'];
   const preset = VALID_PRESETS.includes(presetParam) ? presetParam : null;
   let color = (searchParams.get('color') || '6c63ff').replace('#', '');
 

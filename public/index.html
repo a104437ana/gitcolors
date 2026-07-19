@@ -675,6 +675,7 @@
           <option value="wave">🌊 wave</option>
           <option value="girly">🎀 girly</option>
           <option value="dev">💻 dev</option>
+          <option value="rainbow2">🌈 rainbow2</option>
         </select>
       </div>
     </div>
@@ -809,6 +810,46 @@ function hueForPosition(wi, total) {
 const THEMES = {
   rainbow: {
     label: '🌈 rainbow',
+    accent: '#ff2d95',
+    pinkHex: '#ff2d95',
+    // roxo -> azul -> vermelho -> rosa (#ff2d95); a secção interior é o gradiente clássico azul->vermelho
+    getCellColor(wi, total, level, mode) {
+      const t = total <= 1 ? 0 : wi / (total - 1);
+      const segStart = 0.15, segEnd = 0.85;
+      let hex;
+      if (t < segStart) {
+        // roxo (280) -> azul (240)
+        const localT = t / segStart;
+        const hue = 280 - localT * (280 - 240);
+        hex = hslToHex(hue, 70, 55);
+      } else if (t > segEnd) {
+        // vermelho (0) -> rosa exato (#ff2d95)
+        const localT = (t - segEnd) / (1 - segEnd);
+        const [pinkH, pinkS, pinkL] = hexToHsl(this.pinkHex);
+        let hue = localT * (pinkH - 360);
+        if (hue < 0) hue += 360;
+        const sat = 70 + (pinkS - 70) * localT;
+        const light = 55 + (pinkL - 55) * localT;
+        hex = hslToHex(hue, sat, light);
+      } else {
+        // secção interior: azul (240) -> vermelho (0)
+        const localT = (t - segStart) / (segEnd - segStart);
+        const hue = 240 - localT * 240;
+        hex = hslToHex(hue, 70, 55);
+      }
+      const rgb = hexToRgb(hex);
+      if (level === 0) return { fill: 'transparent', stroke: `rgba(${rgb},0.35)` };
+      if (mode === 'levels') {
+        const opacities = { 1: 0.3, 2: 0.55, 3: 0.78, 4: 1 };
+        const opacity = opacities[level];
+        const color = opacity === 1 ? hex : `rgba(${rgb},${opacity})`;
+        return { fill: color, stroke: color };
+      }
+      return { fill: hex, stroke: hex };
+    },
+  },
+  rainbow2: {
+    label: '🌈 rainbow2',
     accent: '#ff2d95',
     // azul (mais antigo) -> vermelho (mais recente), opacidade/gradiente segue solid/levels
     getCellColor(wi, total, level, mode) {
@@ -1197,7 +1238,8 @@ function updateLegend() {
 
   if (rainbowMode) {
     const messages = {
-      rainbow: 'blue → red over time',
+      rainbow: 'purple → pink over time',
+      rainbow2: 'blue → red over time',
       sunset: 'purple → gold over time',
       wave: 'blue → purple by weekday',
       girly: 'pink → purple over time',
