@@ -8,11 +8,13 @@ Perfect for **adding a personal touch to your README** — quick and easy, **rea
 
 See your graph here: https://gitcolors.vercel.app
 
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=rainbow" media="(prefers-color-scheme: dark)" />
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow" media="(prefers-color-scheme: light)" />
   <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow" alt="a104437ana contributions" width="1000" />
 </picture>
+</a>
 
 ## ⚡ Quick Setup
 
@@ -24,59 +26,75 @@ See your graph here: https://gitcolors.vercel.app
 
 ## Themes
 - 🌈 **Rainbow**
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=rainbow" media="(prefers-color-scheme: dark)" />
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow" media="(prefers-color-scheme: light)" />
   <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow" alt="a104437ana contributions" width="1000" />
 </picture>
+</a>
 
 - 🌅 **Sunset**
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=sunset" media="(prefers-color-scheme: dark)" />
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=sunset" media="(prefers-color-scheme: light)" />
   <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=sunset" alt="a104437ana contributions" width="1000" />
 </picture>
+</a>
 
 - 🌊 **Wave**
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=wave" media="(prefers-color-scheme: dark)" />
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=wave" media="(prefers-color-scheme: light)" />
   <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=wave" alt="a104437ana contributions" width="1000" />
 </picture>
+</a>
 
 - 🎀 **Girly**
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=girly" media="(prefers-color-scheme: dark)" />
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=girly" media="(prefers-color-scheme: light)" />
   <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=girly" alt="a104437ana contributions" width="1000" />
 </picture>
+</a>
 
 - 💻 **Dev**
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=dev" media="(prefers-color-scheme: dark)" />
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=dev" media="(prefers-color-scheme: light)" />
   <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=dev" alt="a104437ana contributions" width="1000" />
 </picture>
+</a>
 
 - 🌈 **Rainbow2**
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=rainbow2" media="(prefers-color-scheme: dark)" />
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow2" media="(prefers-color-scheme: light)" />
   <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow2" alt="a104437ana contributions" width="1000" />
 </picture>
+</a>
 
 ## Without theme (any color)
 - ✨ **Pink**
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=none" media="(prefers-color-scheme: dark)" />
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none" media="(prefers-color-scheme: light)" />
   <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none" alt="a104437ana contributions" width="1000" />
 </picture>
+</a>
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=levels&preset=none" media="(prefers-color-scheme: dark)" />
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=levels&preset=none" media="(prefers-color-scheme: light)" />
   <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=levels&preset=none" alt="a104437ana contributions" width="1000" />
 </picture>
+</a>
 
 ## Features
 - 🌈 GitHub contributions graph in any color you want
