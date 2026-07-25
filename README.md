@@ -128,8 +128,6 @@ If you want an image that automatically switches between dark and light dependin
 ```
 Then just replace the values (`username`, `color`, `theme`, `mode`, `preset`) with whatever you'd like, following the options described in the API section above.
 
-> 💡 Wrapping the image in a link to gitcolors.vercel.app is optional but recommended — it's how people browsing your README discover the tool too.
-
 ## Support
 If you like this project, please consider giving it a star ⭐
 
