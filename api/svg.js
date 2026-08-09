@@ -252,6 +252,8 @@ function generateSVG(weeks, theme, colorHex, mode, preset) {
       const x = paddingLeft + wi * step;
       const y = paddingTop + dow * step;
       const level = getLevel(day.contributionCount);
+      const delay = wi * 20 + dow * 10;
+      const animStyle = `animation:cellWave .3s linear ${delay}ms both`;
 
       let fill, stroke;
       if (presetTheme) {
@@ -266,9 +268,9 @@ function generateSVG(weeks, theme, colorHex, mode, preset) {
       }
 
       if (level > 0) {
-        cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="${fill}" />`;
+        cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="${fill}" style="${animStyle}" />`;
       } else {
-        cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="none" stroke="${stroke}" stroke-width="1" />`;
+        cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="none" stroke="${stroke}" stroke-width="1" style="${animStyle}" />`;
       }
     });
   });
@@ -280,6 +282,7 @@ function generateSVG(weeks, theme, colorHex, mode, preset) {
   });
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  <style>@keyframes cellWave{from{opacity:0}to{opacity:1}}</style>
   <rect width="${W}" height="${H}" rx="10" fill="transparent" />
   ${monthLabels}
   ${dayLabels}

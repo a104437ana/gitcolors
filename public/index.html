@@ -457,6 +457,14 @@
       transition: background 0.25s, border-color 0.25s, opacity 0.1s, transform 0.1s;
     }
     .day-cell:hover { opacity: 0.75; transform: scale(1.2); }
+    @keyframes cellWave {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .day-cell.bloom-cell {
+      animation: cellWave 0.3s linear both;
+      animation-delay: var(--delay, 0ms);
+    }
     .day-cell[data-level="1"] { background: var(--lvl1); border-color: var(--lvl1); }
     .day-cell[data-level="2"] { background: var(--lvl2); border-color: var(--lvl2); }
     .day-cell[data-level="3"] { background: var(--lvl3); border-color: var(--lvl3); }
@@ -1022,11 +1030,11 @@ function setTheme(name) {
   if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
 }
 
-function refreshGraph() {
+function refreshGraph(animate = false) {
   if (!lastWeeksData) return;
   const container = document.querySelector('.graph-container');
   if (!container) return;
-  container.innerHTML = `${buildGraph(lastWeeksData)}<div class="legend-row" id="graphLegend"></div>`;
+  container.innerHTML = `${buildGraph(lastWeeksData, animate)}<div class="legend-row" id="graphLegend"></div>`;
   setupTooltips();
   updateLegend();
 }
@@ -1254,7 +1262,7 @@ function getLevel(count) {
   if(count===0) return 0; if(count<=2) return 1; if(count<=5) return 2; if(count<=9) return 3; return 4;
 }
 
-function buildGraph(weeks) {
+function buildGraph(weeks, animate = true) {
   const STEP = 15;
   let monthHtml = '<div class="month-row">';
   let lastMonth = -1;
@@ -1282,16 +1290,18 @@ function buildGraph(weeks) {
     weeksHtml += '<div class="week">';
     const fd = week.contributionDays[0];
     if (fd) { const wd=new Date(fd.date).getDay(); for(let i=0;i<wd;i++) weeksHtml+=`<div class="day-cell" style="visibility:hidden"></div>`; }
-    week.contributionDays.forEach(day => {
+    week.contributionDays.forEach((day, ci) => {
       const lv = getLevel(day.contributionCount);
-      let styleAttr = '';
+      let cellStyle = '';
       if (rainbowMode) {
         const theme = THEMES[currentThemeName] || THEMES.rainbow;
         const dayIdx = new Date(day.date).getDay();
         const { fill, stroke } = theme.getCellColor(wi, weeks.length, lv, graphMode, dayIdx);
-        styleAttr = ` style="background:${fill};border-color:${stroke}"`;
+        cellStyle += `background:${fill};border-color:${stroke};`;
       }
-      weeksHtml += `<div class="day-cell" data-level="${lv}" data-count="${day.contributionCount}" data-date="${day.date}"${styleAttr}></div>`;
+      const cellClass = animate ? 'day-cell bloom-cell' : 'day-cell';
+      if (animate) cellStyle += `--delay:${wi * 20 + ci * 10}ms;`;
+      weeksHtml += `<div class="${cellClass}" data-level="${lv}" data-count="${day.contributionCount}" data-date="${day.date}" style="${cellStyle}"></div>`;
     });
     weeksHtml += '</div>';
   });
