@@ -736,6 +736,10 @@
           </button>
           <span class="mode-label" id="modeLevelsLabel">levels</span>
         </div>
+        <label class="rainbow-toggle" for="animateCheckbox">
+          <input type="checkbox" id="animateCheckbox" checked autocomplete="off" onchange="setEmbedAnimate(this.checked)" />
+          🎬 animate
+        </label>
         <label class="rainbow-toggle" for="rainbowCheckbox">
           <input type="checkbox" id="rainbowCheckbox" checked autocomplete="off" onchange="setRainbowMode(this.checked)" />
           🎨 theme
@@ -871,6 +875,7 @@ function hslToHex(h,s,l){
 let graphMode = 'mono'; // 'mono' | 'levels'
 let rainbowMode = true;   // tema ligado por defeito
 let currentThemeName = 'rainbow';
+let embedAnimate = true;  // controla o &animate= do embed exportado, não afeta o preview
 let lastWeeksData = null;
 
 function hueForPosition(wi, total) {
@@ -1030,6 +1035,13 @@ function setRainbowMode(on) {
     applyLiveColor(hsvToHex(pickerHue, pickerSat, pickerVal));
   }
   refreshGraph();
+  updateEmbedCode();
+  if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
+}
+
+function setEmbedAnimate(on) {
+  embedAnimate = on;
+  if (on) refreshGraph(true);
   updateEmbedCode();
   if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
 }
@@ -1443,7 +1455,7 @@ function setupTooltips() {
 function getEmbedUrl(theme) {
   const colorHex = hsvToHex(pickerHue, pickerSat, pickerVal).replace('#','');
   const preset = rainbowMode ? currentThemeName : 'none';
-  return `https://gitcolors.vercel.app/api/svg?username=${currentUsername}&color=${colorHex}&theme=${theme}&mode=${graphMode}&preset=${preset}`;
+  return `https://gitcolors.vercel.app/api/svg?username=${currentUsername}&color=${colorHex}&theme=${theme}&mode=${graphMode}&preset=${preset}&animate=${embedAnimate}`;
 }
 
 function getEmbedCode() {
