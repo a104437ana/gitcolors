@@ -104,6 +104,7 @@ See your graph here: https://gitcolors.vercel.app
 - 💻 Dedicated [website](https://gitcolors.vercel.app) to generate and view your graph
 - ✨ Beautiful preset themes like Rainbow, Sunset and more
 - 📊 View contributions by intensity or simply contributed / not contributed
+- 🎬 Cells fade in one by one when the image loads
 
 ## API
 You can also hit the API directly to generate the image, without going through the site:
