@@ -204,7 +204,7 @@ function getFillForPresetCell(level, mode, hex, emptyOpacity) {
   return { fill: hex, stroke: hex };
 }
 
-function generateSVG(weeks, theme, colorHex, mode, preset) {
+function generateSVG(weeks, theme, colorHex, mode, preset, animate) {
   const isDark = theme === 'dark';
   const activeColor = `#${colorHex}`;
   const rgb = hexToRgb(colorHex);
@@ -253,7 +253,7 @@ function generateSVG(weeks, theme, colorHex, mode, preset) {
       const y = paddingTop + dow * step;
       const level = getLevel(day.contributionCount);
       const delay = wi * 20 + dow * 10;
-      const animStyle = `animation:cellWave .3s linear ${delay}ms both`;
+      const animStyle = animate ? ` style="animation:cellWave .3s linear ${delay}ms both"` : '';
 
       let fill, stroke;
       if (presetTheme) {
@@ -268,9 +268,9 @@ function generateSVG(weeks, theme, colorHex, mode, preset) {
       }
 
       if (level > 0) {
-        cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="${fill}" style="${animStyle}" />`;
+        cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="${fill}"${animStyle} />`;
       } else {
-        cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="none" stroke="${stroke}" stroke-width="1" style="${animStyle}" />`;
+        cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="none" stroke="${stroke}" stroke-width="1"${animStyle} />`;
       }
     });
   });
@@ -281,8 +281,10 @@ function generateSVG(weeks, theme, colorHex, mode, preset) {
     if (d) dayLabels += `<text x="${paddingLeft - 4}" y="${paddingTop + i * step + cellSize - 2}" font-size="8" fill="${textColor}" font-family="${fontFamily}" text-anchor="end">${d}</text>`;
   });
 
+  const style = animate ? `<style>@keyframes cellWave{from{opacity:0}to{opacity:1}}</style>` : '';
+
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-  <style>@keyframes cellWave{from{opacity:0}to{opacity:1}}</style>
+  ${style}
   <rect width="${W}" height="${H}" rx="10" fill="transparent" />
   ${monthLabels}
   ${dayLabels}
@@ -300,6 +302,7 @@ export default async function handler(req) {
   const VALID_PRESETS = ['rainbow', 'rainbow2', 'sunset', 'wave', 'girly', 'dev'];
   const preset = VALID_PRESETS.includes(presetParam) ? presetParam : null;
   let color = (searchParams.get('color') || '6c63ff').replace('#', '');
+  const animate = searchParams.get('animate') !== 'false';
 
   if (!username) {
     return new Response('Username required', { status: 400 });
@@ -356,7 +359,7 @@ export default async function handler(req) {
     }
 
     const cal = data.data.user.contributionsCollection.contributionCalendar;
-    const svg = generateSVG(cal.weeks, theme, color, mode, preset);
+    const svg = generateSVG(cal.weeks, theme, color, mode, preset, animate);
 
     return new Response(svg, {
       status: 200,
