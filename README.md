@@ -131,5 +131,8 @@ Then just replace the values (`username`, `color`, `theme`, `mode`, `preset`) wi
 ## Support
 If you like this project, please consider giving it a star ⭐
 
+## Also check out
+Want your GitHub contributions as a garden of flowers instead? Check out [sakura garden](https://sakura-garden.vercel.app/)
+
 ## Stars
 [![GitHub stars](https://img.shields.io/github/stars/a104437ana/gitcolors?style=social&label=Stars)](https://github.com/a104437ana/gitcolors/stargazers/)

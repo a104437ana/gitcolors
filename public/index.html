@@ -639,6 +639,19 @@
     }
     .demo-star-btn-icon { font-size: 0.95rem; line-height: 1; }
 
+    .sakura-note {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.7rem;
+      color: var(--text3);
+    }
+    .sakura-note a {
+      font-weight: 700;
+      color: var(--text2);
+      text-decoration: underline;
+    }
+    .sakura-note a:hover { color: var(--text); }
+
     .about-section {
       margin-top: 2.5rem; padding-top: 0;
       font-size: 0.75rem; color: var(--text3);
@@ -1372,6 +1385,9 @@ function renderResult(data, username, isDemo) {
         <span class="demo-star-btn-icon">⭐</span>
         <span>Check out the project on GitHub and consider giving it a star</span>
       </a>
+    </div>
+    <div class="sakura-note">
+      Want your GitHub contributions as a garden of flowers instead? Check out <a href="https://sakura-garden.vercel.app/" target="_blank">sakura garden</a>
     </div>
   `;
 
