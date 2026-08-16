@@ -10,9 +10,9 @@ See your graph here: https://gitcolors.vercel.app
 
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=rainbow" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow" alt="a104437ana contributions" width="1000" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=rainbow&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow&emptyColor=neutral" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow&emptyColor=neutral" alt="a104437ana contributions" width="1000" />
 </picture>
 </a>
 
@@ -28,54 +28,54 @@ See your graph here: https://gitcolors.vercel.app
 - 🌈 **Rainbow**
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=rainbow" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow" alt="a104437ana contributions" width="1000" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=rainbow&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow&emptyColor=neutral" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow&emptyColor=neutral" alt="a104437ana contributions" width="1000" />
 </picture>
 </a>
 
 - 🌅 **Sunset**
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=sunset" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=sunset" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=sunset" alt="a104437ana contributions" width="1000" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=sunset&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=sunset&emptyColor=neutral" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=sunset&emptyColor=neutral" alt="a104437ana contributions" width="1000" />
 </picture>
 </a>
 
 - 🌊 **Wave**
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=wave" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=wave" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=wave" alt="a104437ana contributions" width="1000" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=wave&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=wave&emptyColor=neutral" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=wave&emptyColor=neutral" alt="a104437ana contributions" width="1000" />
 </picture>
 </a>
 
 - 🎀 **Girly**
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=girly" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=girly" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=girly" alt="a104437ana contributions" width="1000" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=girly&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=girly&emptyColor=neutral" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=girly&emptyColor=neutral" alt="a104437ana contributions" width="1000" />
 </picture>
 </a>
 
 - 💻 **Dev**
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=dev" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=dev" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=dev" alt="a104437ana contributions" width="1000" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=dev&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=dev&emptyColor=neutral" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=dev&emptyColor=neutral" alt="a104437ana contributions" width="1000" />
 </picture>
 </a>
 
 - 🌈 **Rainbow2**
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=rainbow2" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow2" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow2" alt="a104437ana contributions" width="1000" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=rainbow2&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow2&emptyColor=neutral" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow2&emptyColor=neutral" alt="a104437ana contributions" width="1000" />
 </picture>
 </a>
 
@@ -83,16 +83,25 @@ See your graph here: https://gitcolors.vercel.app
 - ✨ **Pink**
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=none" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none" alt="a104437ana contributions" width="1000" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=none&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&emptyColor=neutral" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&emptyColor=neutral" alt="a104437ana contributions" width="1000" />
 </picture>
 </a>
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=levels&preset=none" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=levels&preset=none" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=levels&preset=none" alt="a104437ana contributions" width="1000" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=levels&preset=none&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=levels&preset=none&emptyColor=neutral" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=levels&preset=none&emptyColor=neutral" alt="a104437ana contributions" width="1000" />
+</picture>
+</a>
+
+Without `emptyColor=neutral` (default `tint`, empty-day borders follow the graph color):
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
+<picture>
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=none" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none" alt="a104437ana contributions" width="1000" />
 </picture>
 </a>
 
@@ -123,9 +132,9 @@ If you want an image that automatically switches between dark and light dependin
 ```markdown
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
   <picture>
-    <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=dev" media="(prefers-color-scheme: dark)" />
-    <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=dev" media="(prefers-color-scheme: light)" />
-    <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=dev" alt="a104437ana contributions" width="1000" />
+    <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=dev&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
+    <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=dev&emptyColor=neutral" media="(prefers-color-scheme: light)" />
+    <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=dev&emptyColor=neutral" alt="a104437ana contributions" width="1000" />
   </picture>
 </a>
 ```
