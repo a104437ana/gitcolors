@@ -96,12 +96,11 @@ See your graph here: https://gitcolors.vercel.app
 </picture>
 </a>
 
-Without `emptyColor=neutral` (default `tint`, empty-day borders follow the graph color):
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=none" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none" alt="a104437ana contributions" width="1000" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=none&v=1" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&v=1" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&v=1" alt="a104437ana contributions" width="1000" />
 </picture>
 </a>
 
