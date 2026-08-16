@@ -153,8 +153,11 @@ const PRESETS = {
   },
 };
 
-function getFillForLevel(level, mode, activeColor, rgb, emptyStroke) {
-  if (level === 0) return { fill: 'none', stroke: emptyStroke };
+function getFillForLevel(level, mode, activeColor, rgb, emptyColor, neutralStroke) {
+  if (level === 0) {
+    const stroke = emptyColor === 'neutral' ? neutralStroke : `rgba(${rgb},0.4)`;
+    return { fill: 'none', stroke };
+  }
 
   if (mode === 'levels') {
     const opacities = { 1: 0.3, 2: 0.55, 3: 0.78, 4: 1 };
@@ -167,12 +170,13 @@ function getFillForLevel(level, mode, activeColor, rgb, emptyStroke) {
   return { fill: activeColor, stroke: activeColor };
 }
 
-function getFillForRainbowCell(level, mode, hue, emptyOpacity) {
+function getFillForRainbowCell(level, mode, hue, emptyColor, neutralStroke) {
   const cellHex = hslToHex(hue, 70, 55);
   const cellRgb = hexToRgb(cellHex.slice(1));
 
   if (level === 0) {
-    return { fill: 'none', stroke: `rgba(${cellRgb},${emptyOpacity})` };
+    const stroke = emptyColor === 'neutral' ? neutralStroke : `rgba(${cellRgb},0.35)`;
+    return { fill: 'none', stroke };
   }
 
   if (mode === 'levels') {
@@ -186,11 +190,12 @@ function getFillForRainbowCell(level, mode, hue, emptyOpacity) {
   return { fill: cellHex, stroke: cellHex };
 }
 
-function getFillForPresetCell(level, mode, hex, emptyOpacity) {
+function getFillForPresetCell(level, mode, hex, emptyColor, neutralStroke) {
   const rgb = hexToRgb(hex.replace('#', ''));
 
   if (level === 0) {
-    return { fill: 'none', stroke: `rgba(${rgb},${emptyOpacity})` };
+    const stroke = emptyColor === 'neutral' ? neutralStroke : `rgba(${rgb},0.35)`;
+    return { fill: 'none', stroke };
   }
 
   if (mode === 'levels') {
@@ -204,11 +209,12 @@ function getFillForPresetCell(level, mode, hex, emptyOpacity) {
   return { fill: hex, stroke: hex };
 }
 
-function generateSVG(weeks, theme, colorHex, mode, preset, animate) {
+function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) {
   const isDark = theme === 'dark';
   const activeColor = `#${colorHex}`;
   const rgb = hexToRgb(colorHex);
-  const emptyStroke = `rgba(${rgb},0.4)`;
+  // 'neutral' = cinza dependente só do tema, independente da cor ativa; 'tint' (default) = tom da cor ativa, como era antes
+  const neutralStroke = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.18)';
   const textColor = isDark ? '#ffffff' : '#000000';
   const fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif";
 
@@ -258,13 +264,13 @@ function generateSVG(weeks, theme, colorHex, mode, preset, animate) {
       let fill, stroke;
       if (presetTheme) {
         const cellHex = presetTheme.getHex(wi, weeks.length, dow, isDark);
-        ({ fill, stroke } = getFillForPresetCell(level, mode, cellHex, 0.35));
+        ({ fill, stroke } = getFillForPresetCell(level, mode, cellHex, emptyColor, neutralStroke));
       } else if (purplePinkCellHex) {
-        ({ fill, stroke } = getFillForPresetCell(level, mode, purplePinkCellHex, 0.35));
+        ({ fill, stroke } = getFillForPresetCell(level, mode, purplePinkCellHex, emptyColor, neutralStroke));
       } else if (isRainbow) {
-        ({ fill, stroke } = getFillForRainbowCell(level, mode, hue, 0.35));
+        ({ fill, stroke } = getFillForRainbowCell(level, mode, hue, emptyColor, neutralStroke));
       } else {
-        ({ fill, stroke } = getFillForLevel(level, mode, activeColor, rgb, emptyStroke));
+        ({ fill, stroke } = getFillForLevel(level, mode, activeColor, rgb, emptyColor, neutralStroke));
       }
 
       if (level > 0) {
@@ -303,6 +309,7 @@ export default async function handler(req) {
   const preset = VALID_PRESETS.includes(presetParam) ? presetParam : null;
   let color = (searchParams.get('color') || '6c63ff').replace('#', '');
   const animate = searchParams.get('animate') !== 'false';
+  const emptyColor = searchParams.get('emptyColor') === 'neutral' ? 'neutral' : 'tint';
 
   if (!username) {
     return new Response('Username required', { status: 400 });
@@ -359,7 +366,7 @@ export default async function handler(req) {
     }
 
     const cal = data.data.user.contributionsCollection.contributionCalendar;
-    const svg = generateSVG(cal.weeks, theme, color, mode, preset, animate);
+    const svg = generateSVG(cal.weeks, theme, color, mode, preset, animate, emptyColor);
 
     return new Response(svg, {
       status: 200,

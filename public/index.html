@@ -740,6 +740,10 @@
           <input type="checkbox" id="animateCheckbox" checked autocomplete="off" onchange="setEmbedAnimate(this.checked)" />
           🎬 animate
         </label>
+        <label class="rainbow-toggle" for="emptyColorCheckbox">
+          <input type="checkbox" id="emptyColorCheckbox" checked autocomplete="off" onchange="setEmptyColorMode(this.checked)" />
+          ⚪ neutral empty cells
+        </label>
         <label class="rainbow-toggle" for="rainbowCheckbox">
           <input type="checkbox" id="rainbowCheckbox" checked autocomplete="off" onchange="setRainbowMode(this.checked)" />
           🎨 theme
@@ -782,6 +786,9 @@ function toggleTheme() {
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('gitcolors-theme', next);
+  if (embedEmptyColor === 'neutral') {
+    document.documentElement.style.setProperty('--cell-empty', getNeutralEmptyStroke());
+  }
   if (rainbowMode) refreshGraph();
 }
 
@@ -876,6 +883,7 @@ let graphMode = 'mono'; // 'mono' | 'levels'
 let rainbowMode = true;   // tema ligado por defeito
 let currentThemeName = 'rainbow';
 let embedAnimate = true;  // controla o &animate= do embed exportado, não afeta o preview
+let embedEmptyColor = 'neutral';  // default no site é 'neutral' (mais legível); a API mantém 'tint' como default para não mudar embeds antigos
 let lastWeeksData = null;
 
 function hueForPosition(wi, total) {
@@ -1046,6 +1054,19 @@ function setEmbedAnimate(on) {
   if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
 }
 
+function setEmptyColorMode(on) {
+  embedEmptyColor = on ? 'neutral' : 'tint';
+  if (rainbowMode) {
+    const theme = THEMES[currentThemeName] || THEMES.rainbow;
+    applyLiveColor(theme.accent);
+  } else {
+    applyLiveColor(hsvToHex(pickerHue, pickerSat, pickerVal));
+  }
+  refreshGraph();
+  updateEmbedCode();
+  if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
+}
+
 function setTheme(name) {
   currentThemeName = name;
   const theme = THEMES[name] || THEMES.rainbow;
@@ -1082,6 +1103,11 @@ function toggleGraphMode() {
   setGraphMode(graphMode === 'levels' ? 'mono' : 'levels');
 }
 
+function getNeutralEmptyStroke() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  return isLight ? 'rgba(0,0,0,0.18)' : 'rgba(255,255,255,0.18)';
+}
+
 function applyLiveColor(hex) {
   const root = document.documentElement;
   const rgb = hexToRgb(hex);
@@ -1103,7 +1129,7 @@ function applyLiveColor(hex) {
   root.style.setProperty('--c3', hex);
   root.style.setProperty('--c4', hex);
   root.style.setProperty('--accent', hex);
-  root.style.setProperty('--cell-empty', `rgba(${rgb}, 0.4)`);
+  root.style.setProperty('--cell-empty', embedEmptyColor === 'neutral' ? getNeutralEmptyStroke() : `rgba(${rgb}, 0.4)`);
   const hl = document.querySelector('.highlight');
   if (hl) hl.style.backgroundImage = `linear-gradient(135deg,${hex},${hex}dd)`;
   updateLegend();
@@ -1321,7 +1347,8 @@ function buildGraph(weeks, animate = true) {
       if (rainbowMode) {
         const theme = THEMES[currentThemeName] || THEMES.rainbow;
         const dayIdx = new Date(day.date).getDay();
-        const { fill, stroke } = theme.getCellColor(wi, weeks.length, lv, graphMode, dayIdx);
+        let { fill, stroke } = theme.getCellColor(wi, weeks.length, lv, graphMode, dayIdx);
+        if (lv === 0 && embedEmptyColor === 'neutral') stroke = getNeutralEmptyStroke();
         cellStyle += `background:${fill};border-color:${stroke};`;
       }
       const cellClass = animate ? 'day-cell bloom-cell' : 'day-cell';
@@ -1455,7 +1482,7 @@ function setupTooltips() {
 function getEmbedUrl(theme) {
   const colorHex = hsvToHex(pickerHue, pickerSat, pickerVal).replace('#','');
   const preset = rainbowMode ? currentThemeName : 'none';
-  return `https://gitcolors.vercel.app/api/svg?username=${currentUsername}&color=${colorHex}&theme=${theme}&mode=${graphMode}&preset=${preset}&animate=${embedAnimate}`;
+  return `https://gitcolors.vercel.app/api/svg?username=${currentUsername}&color=${colorHex}&theme=${theme}&mode=${graphMode}&preset=${preset}&animate=${embedAnimate}&emptyColor=${embedEmptyColor}`;
 }
 
 function getEmbedCode() {

@@ -109,13 +109,14 @@ See your graph here: https://gitcolors.vercel.app
 ## API
 You can also hit the API directly to generate the image, without going through the site:
 
-`https://gitcolors.vercel.app/api/svg?username=YOUR_USERNAME&color=HEX&theme=dark|light&mode=solid|levels&preset=rainbow|sunset|wave|girly|dev&animate=true|false`
+`https://gitcolors.vercel.app/api/svg?username=YOUR_USERNAME&color=HEX&theme=dark|light&mode=solid|levels&preset=rainbow|sunset|wave|girly|dev&animate=true|false&emptyColor=tint|neutral`
 
 - `color` — hex color, no `#` (used when `preset` isn't set)
 - `theme` — `dark` or `light`
 - `mode` — `solid` (flat color) or `levels` (intensity-based)
 - `preset` — overrides `color` with a built-in palette (`rainbow`, `sunset`, `wave`, `girly`, `dev`)
 - `animate` — set to `false` to disable the cell fade-in animation (default `true`)
+- `emptyColor` — `tint` (default) colors empty-day borders in the same hue as your graph; `neutral` uses a theme-based gray instead, for more contrast against low-activity days
 
 ## 🔧 Manual Setup
 If you want an image that automatically switches between dark and light depending on the user's system theme, you can set it up like this:
