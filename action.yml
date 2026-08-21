@@ -1,0 +1,11 @@
+name: 🌈 gitcolors Generator
+description: Generates your GitHub contributions graph in any color, theme, or gradient
+author: a104437ana
+
+branding:
+  icon: droplet
+  color: purple
+
+runs:
+  using: node20
+  main: scripts/generate.js

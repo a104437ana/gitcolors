@@ -139,6 +139,70 @@ If you want an image that automatically switches between dark and light dependin
 ```
 Then just replace the values (`username`, `color`, `theme`, `mode`, `preset`) with whatever you'd like, following the options described in the API section above.
 
+## 🚀 Advanced Setup
+
+1. Create `.github/workflows/gitcolors.yml`
+2. Copy the code below
+```yaml
+name: gitcolors
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/gitcolors.yml'
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate gitcolors graph
+        uses: a104437ana/gitcolors@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITCOLORS_COLOR: ff2d95
+          GITCOLORS_MODE: solid
+          GITCOLORS_PRESET: rainbow
+          GITCOLORS_ANIMATE: "true"
+          GITCOLORS_EMPTY_COLOR: neutral
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan output
+          git add gitcolors.svg gitcolors-dark.svg
+          git commit -m "Update gitcolors graph" || exit 0
+          git push -f origin output
+```
+3. Paste into the file you just created
+4. Copy the code below
+```markdown
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
+  <picture>
+    <source srcset="https://raw.githubusercontent.com/your-github-username/your-github-username/output/gitcolors-dark.svg" media="(prefers-color-scheme: dark)" width="846" height="145" />
+    <source srcset="https://raw.githubusercontent.com/your-github-username/your-github-username/output/gitcolors.svg" media="(prefers-color-scheme: light)" width="846" height="145" />
+    <img src="https://raw.githubusercontent.com/your-github-username/your-github-username/output/gitcolors.svg" width="846" height="145" />
+  </picture>
+</a>
+```
+5. Replace `your-github-username` with your GitHub username
+6. Paste into your README
+
+`GITCOLORS_COLOR`, `GITCOLORS_MODE`, `GITCOLORS_PRESET`, `GITCOLORS_ANIMATE` and `GITCOLORS_EMPTY_COLOR` are all optional and follow the same options described in the API section above — remove any you don't need.
+
+⚠️ The graph may take a minute to appear after the workflow runs for the first time, but after that it will always be there and update automatically every day based on your GitHub activity
+
 ## Support
 If you like this project, please consider giving it a star ⭐
 
