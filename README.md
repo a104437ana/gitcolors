@@ -12,7 +12,7 @@ See your graph here: https://gitcolors.vercel.app
 <picture>
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=rainbow&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow&emptyColor=neutral" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow&emptyColor=neutral" width="846" height="145" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow&emptyColor=neutral" width="846" height="145" loading="eager" />
 </picture>
 </a>
 
@@ -23,6 +23,10 @@ See your graph here: https://gitcolors.vercel.app
 3. Customize the graph
 4. Copy the image
 5. Paste into your README
+
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
+<img src="https://gitcolors.vercel.app/quick-setup-demo.gif" alt="Quick setup demo" loading="lazy"/>
+</a>
 
 ## Themes
 - 🌈 **Rainbow**
