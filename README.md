@@ -23,6 +23,7 @@ See your graph here: https://gitcolors.vercel.app
 3. Customize the graph
 4. Copy the image
 5. Paste into your README
+6. Commit and push
 
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <img src="https://gitcolors.vercel.app/quick-setup-demo.gif" alt="Quick setup demo" loading="lazy"/>
