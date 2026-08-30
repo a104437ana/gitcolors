@@ -6,8 +6,6 @@ A simple tool to **customize your GitHub contributions graph** with **any color,
 
 Perfect for **adding a personal touch to your README** — quick and easy, **ready in seconds** through the [website](https://gitcolors.vercel.app).
 
-See your graph here: https://gitcolors.vercel.app
-
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
 <picture>
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=rainbow&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
@@ -15,6 +13,8 @@ See your graph here: https://gitcolors.vercel.app
   <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=rainbow&emptyColor=neutral" width="846" height="164" style="height:auto" loading="eager" />
 </picture>
 </a>
+
+See your graph here: https://gitcolors.vercel.app
 
 ## Features
 - 🌈 GitHub contributions graph in any color you want
