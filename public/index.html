@@ -1222,6 +1222,9 @@ function getGithubEmptyFill() {
 
 function setFilledEmptyMode(on) {
   const neutralCheckbox = document.getElementById('emptyColorCheckbox');
+  // "filled" é uma versão mais forte de "neutral" — ligar um liga visualmente o outro,
+  // em vez de deixar o neutral num estado ambíguo (desativado mas sem refletir o que está realmente ativo)
+  if (on) neutralCheckbox.checked = true;
   embedEmptyColor = on ? 'filled' : (neutralCheckbox.checked ? 'neutral' : 'tint');
   updateControlsAvailability();
   if (rainbowMode) {
