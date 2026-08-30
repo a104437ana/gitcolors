@@ -374,6 +374,7 @@
     }
     .swatch:hover { transform: scale(1.2); }
     .swatch:active { transform: scale(0.95); }
+    .theme-swatch.active { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent); }
 
     .empty-style-row {
       display: flex;
@@ -805,6 +806,22 @@
           <button type="button" class="swatch" style="background:#f97316" data-hex="#f97316" title="Orange"></button>
           <button type="button" class="swatch" style="background:#ef4444" data-hex="#ef4444" title="Red"></button>
         </div>
+
+        <div class="swatch-label">try a theme</div>
+        <div class="swatch-row" id="themeSwatchRow">
+          <button type="button" class="swatch theme-swatch active" data-theme="rainbow" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6,#ef4444,#ff2d95)" title="Rainbow"></button>
+          <button type="button" class="swatch theme-swatch" data-theme="rainbow2" style="background:linear-gradient(135deg,#3b82f6,#ef4444)" title="Rainbow2"></button>
+          <button type="button" class="swatch theme-swatch" data-theme="sunset" style="background:linear-gradient(135deg,#3a0ca3,#e0218a,#ff6b35,#ffd23f)" title="Sunset"></button>
+          <button type="button" class="swatch theme-swatch" data-theme="wave" style="background:linear-gradient(135deg,#0ea5e9,#7c3aed)" title="Wave"></button>
+          <button type="button" class="swatch theme-swatch" data-theme="girly" style="background:linear-gradient(135deg,#ff5da2,#e05fd0,#a855f7,#7c3aed)" title="Girly"></button>
+          <button type="button" class="swatch theme-swatch" data-theme="dev" style="background:linear-gradient(135deg,#1c7a3c,#8dff6e)" title="Dev"></button>
+          <button type="button" class="swatch theme-swatch" data-theme="github" style="background:linear-gradient(135deg,#9be9a8,#40c463,#30a14e,#216e39)" title="GitHub"></button>
+          <button type="button" class="swatch theme-swatch" data-theme="githubpink" style="background:linear-gradient(135deg,#ffd9ec,#ff9ccf,#ff5da2,#c9127a)" title="GitHub Pink"></button>
+          <button type="button" class="swatch theme-swatch" data-theme="githubblue" style="background:linear-gradient(135deg,#b6e3ff,#54aeff,#0969da,#0a3069)" title="GitHub Blue"></button>
+          <button type="button" class="swatch theme-swatch" data-theme="githubpurple" style="background:linear-gradient(135deg,#ecd8ff,#c297ff,#8250df,#512a97)" title="GitHub Purple"></button>
+          <button type="button" class="swatch theme-swatch" data-theme="githuborange" style="background:linear-gradient(135deg,#ffd8b5,#fb8f44,#bd561d,#762c00)" title="GitHub Orange"></button>
+          <button type="button" class="swatch theme-swatch" data-theme="githubred" style="background:linear-gradient(135deg,#ffcecb,#ff8182,#cf222e,#82061d)" title="GitHub Red"></button>
+        </div>
       </div>
 
       <div class="wheel-widget" id="wheelWidget" title="Drag to pick a color">
@@ -842,11 +859,11 @@
             <span class="empty-style-text">filled</span>
           </button>
         </div>
-        <label class="rainbow-toggle" for="rainbowCheckbox">
+        <label class="rainbow-toggle" for="rainbowCheckbox" style="display:none">
           <input type="checkbox" id="rainbowCheckbox" checked autocomplete="off" onchange="setRainbowMode(this.checked)" />
           🎨 theme
         </label>
-        <select class="theme-select" id="themeSelect" autocomplete="off" onchange="setTheme(this.value)">
+        <select class="theme-select" id="themeSelect" autocomplete="off" onchange="setTheme(this.value)" style="display:none">
           <option value="rainbow">🌈 rainbow</option>
           <option value="sunset">🌅 sunset</option>
           <option value="wave">🌊 wave</option>
@@ -1450,7 +1467,22 @@ function uncheckRainbowBox() {
   if (box) box.checked = false;
   const select = document.getElementById('themeSelect');
   if (select) select.classList.add('hidden');
+  document.querySelectorAll('.theme-swatch').forEach(sw => sw.classList.remove('active'));
   updateControlsAvailability();
+}
+
+function pickTheme(name) {
+  rainbowMode = true;
+  currentThemeName = name;
+  document.getElementById('rainbowCheckbox').checked = true;
+  document.getElementById('themeSelect').value = name;
+  document.querySelectorAll('.theme-swatch').forEach(sw => sw.classList.toggle('active', sw.dataset.theme === name));
+  const theme = THEMES[name] || THEMES.rainbow;
+  applyLiveColor(theme.accent);
+  updateControlsAvailability();
+  refreshGraph();
+  updateEmbedCode();
+  if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
 }
 
 function pickFromSVEvent(e) {
@@ -1491,11 +1523,15 @@ document.addEventListener('touchend', () => { draggingSV = false; draggingHue = 
 wheelHex.addEventListener('keydown', e => { if (e.key === 'Enter') { validateWheelHex(); wheelHex.blur(); } });
 wheelHex.addEventListener('blur', validateWheelHex);
 
-document.querySelectorAll('.swatch').forEach(sw => {
+document.querySelectorAll('.swatch[data-hex]').forEach(sw => {
   sw.addEventListener('click', () => {
     wheelHex.value = sw.dataset.hex;
     validateWheelHex();
   });
+});
+
+document.querySelectorAll('.theme-swatch').forEach(sw => {
+  sw.addEventListener('click', () => pickTheme(sw.dataset.theme));
 });
 
 document.querySelectorAll('.empty-style-opt').forEach(btn => {
