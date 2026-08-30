@@ -39,6 +39,57 @@ See your graph here: https://gitcolors.vercel.app
 <img src="https://gitcolors.vercel.app/quick-setup-demo.gif" alt="Quick setup demo" loading="lazy"/>
 </a>
 
+## Empty cells
+Choose how days with no contributions are drawn, with `emptyColor`:
+
+- `tint` (default) — outlined in a soft version of your color
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
+<picture>
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=none&emptyColor=tint" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&emptyColor=tint" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&emptyColor=tint" width="846" height="164" style="height:auto" />
+</picture>
+</a>
+
+- `neutral` — outlined in gray, more contrast against your color
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
+<picture>
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=none&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&emptyColor=neutral" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&emptyColor=neutral" width="846" height="164" style="height:auto" />
+</picture>
+</a>
+
+- `filled` — solid-filled with GitHub's own gray, closest to the real graph
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
+<picture>
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=none&emptyColor=filled" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&emptyColor=filled" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&emptyColor=filled" width="846" height="164" style="height:auto" />
+</picture>
+</a>
+
+## Display mode
+Choose how contribution days are colored, with `mode`:
+
+- `solid` (default) — every contribution day gets the full color
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
+<picture>
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=solid&preset=none&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=solid&preset=none&emptyColor=neutral" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=solid&preset=none&emptyColor=neutral" width="846" height="164" style="height:auto" />
+</picture>
+</a>
+
+- `levels` — color intensity scales with how many contributions that day had
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
+<picture>
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=levels&preset=none&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=levels&preset=none&emptyColor=neutral" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=levels&preset=none&emptyColor=neutral" width="846" height="164" style="height:auto" />
+</picture>
+</a>
+
 ## Themes
 - 🌈 **Rainbow**
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
@@ -145,39 +196,6 @@ See your graph here: https://gitcolors.vercel.app
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=githubred" media="(prefers-color-scheme: dark)" />
   <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=githubred" media="(prefers-color-scheme: light)" />
   <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=githubred" width="846" height="164" style="height:auto" />
-</picture>
-</a>
-
-## Without theme (any color)
-- ✨ **Pink**
-<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
-<picture>
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=none&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&emptyColor=neutral" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&emptyColor=neutral" width="846" height="164" style="height:auto" />
-</picture>
-</a>
-<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
-<picture>
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=levels&preset=none&emptyColor=neutral" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=levels&preset=none&emptyColor=neutral" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=levels&preset=none&emptyColor=neutral" width="846" height="164" style="height:auto" />
-</picture>
-</a>
-
-<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
-<picture>
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=none&v=1" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&v=1" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&v=1" width="846" height="164" style="height:auto" />
-</picture>
-</a>
-
-<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
-<picture>
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=none&emptyColor=filled" media="(prefers-color-scheme: dark)" />
-  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&emptyColor=filled" media="(prefers-color-scheme: light)" />
-  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&emptyColor=filled" width="846" height="164" style="height:auto" />
 </picture>
 </a>
 
