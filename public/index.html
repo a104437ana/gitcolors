@@ -348,6 +348,31 @@
     .wheel-hex:hover { color: var(--text); border-bottom-color: var(--text3); }
     .wheel-hex:focus { border-bottom: 1px solid var(--accent); color: var(--text); }
 
+    .swatch-label {
+      font-size: 0.65rem;
+      color: var(--text3);
+      letter-spacing: 0.04em;
+      margin: 1rem 0 0.5rem;
+      transition: color 0.25s;
+    }
+    .swatch-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 0.5rem;
+    }
+    .swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid var(--border2);
+      padding: 0;
+      cursor: pointer;
+      transition: transform 0.15s cubic-bezier(.4,0,.2,1), box-shadow 0.15s;
+    }
+    .swatch:hover { transform: scale(1.2); }
+    .swatch:active { transform: scale(0.95); }
+
     .search-row { display: flex; gap: 0.5rem; margin: 1.75rem 0 1.5rem; width: 100%;}
     .search-input {
       flex: 1;
@@ -674,6 +699,7 @@
       .hero-main .md-h1,
       .hero-main .md-p { text-align: center; }
       .hero-main .search-row { justify-content: center; }
+      .hero-main .swatch-row { justify-content: center; }
       .demo-note-break { display: block; }
     }
 
@@ -720,6 +746,18 @@
           <input id="usernameInput" class="search-input" type="text"
             placeholder="github username" autocomplete="off" spellcheck="false" />
           <button class="search-btn" onclick="doSearch()">→ generate</button>
+        </div>
+
+        <div class="swatch-label">try a color</div>
+        <div class="swatch-row" id="swatchRow">
+          <button type="button" class="swatch" style="background:#ff2d95" data-hex="#ff2d95" title="Pink"></button>
+          <button type="button" class="swatch" style="background:#7c3aed" data-hex="#7c3aed" title="Purple"></button>
+          <button type="button" class="swatch" style="background:#2563eb" data-hex="#2563eb" title="Blue"></button>
+          <button type="button" class="swatch" style="background:#14b8a6" data-hex="#14b8a6" title="Teal"></button>
+          <button type="button" class="swatch" style="background:#22c55e" data-hex="#22c55e" title="Green"></button>
+          <button type="button" class="swatch" style="background:#eab308" data-hex="#eab308" title="Gold"></button>
+          <button type="button" class="swatch" style="background:#f97316" data-hex="#f97316" title="Orange"></button>
+          <button type="button" class="swatch" style="background:#ef4444" data-hex="#ef4444" title="Red"></button>
         </div>
       </div>
 
@@ -1303,6 +1341,13 @@ document.addEventListener('touchend', () => { draggingSV = false; draggingHue = 
 
 wheelHex.addEventListener('keydown', e => { if (e.key === 'Enter') { validateWheelHex(); wheelHex.blur(); } });
 wheelHex.addEventListener('blur', validateWheelHex);
+
+document.querySelectorAll('.swatch').forEach(sw => {
+  sw.addEventListener('click', () => {
+    wheelHex.value = sw.dataset.hex;
+    validateWheelHex();
+  });
+});
 function validateWheelHex() {
   let v = wheelHex.value.trim();
   if (!v.startsWith('#')) v = '#'+v;
