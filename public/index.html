@@ -1173,6 +1173,13 @@ function updateControlsAvailability() {
   levelsLabel.classList.toggle('disabled', isFixed);
 
   emptyStyleSelect.disabled = isFixed;
+  // temas de tons fixos mostram sempre as células vazias preenchidas — o dropdown
+  // tem de refletir isso mesmo enquanto está desativado, senão o valor "escondido"
+  // (ex. "neutral" de antes) reaparece de repente ao mudar para uma cor customizada
+  if (isFixed) {
+    emptyStyleSelect.value = 'filled';
+    embedEmptyColor = 'filled';
+  }
 }
 
 function setRainbowMode(on) {
@@ -1539,7 +1546,7 @@ function buildGraph(weeks, animate = true) {
         if (lv === 0 && embedEmptyColor === 'neutral' && !FIXED_LEVEL_THEMES.includes(currentThemeName)) stroke = getNeutralEmptyStroke();
         cellStyle += `background:${fill};border-color:${stroke};`;
       }
-      if (lv === 0 && embedEmptyColor === 'filled' && !FIXED_LEVEL_THEMES.includes(currentThemeName)) {
+      if (lv === 0 && embedEmptyColor === 'filled' && !(rainbowMode && FIXED_LEVEL_THEMES.includes(currentThemeName))) {
         const gh = getGithubEmptyFill();
         cellStyle += `background:${gh};border-color:${gh};`;
       }
