@@ -119,6 +119,15 @@ See your graph here: https://gitcolors.vercel.app
 </picture>
 </a>
 
+- 🐙 **Pink, filled empty cells (GitHub-style)**
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
+<picture>
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=none&emptyColor=filled" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&emptyColor=filled" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&emptyColor=filled" width="846" height="164" style="height:auto" />
+</picture>
+</a>
+
 ## API
 You can also hit the API directly to generate the image, without going through the site:
 
