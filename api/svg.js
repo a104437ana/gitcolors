@@ -153,6 +153,17 @@ const PRESETS = {
   },
 };
 
+// cores reais do grafo de contribuições do GitHub — sem interpolação, 5 tons fixos
+const GITHUB_LEVELS = {
+  light: { 0: '#ebedf0', 1: '#9be9a8', 2: '#40c463', 3: '#30a14e', 4: '#216e39' },
+  dark: { 0: '#161b22', 1: '#0e4429', 2: '#006d32', 3: '#26a641', 4: '#39d353' },
+};
+
+function getFillForGithubCell(level, isDark) {
+  const hex = (isDark ? GITHUB_LEVELS.dark : GITHUB_LEVELS.light)[level];
+  return { fill: hex, stroke: hex };
+}
+
 function getFillForLevel(level, mode, activeColor, rgb, emptyColor, neutralStroke, neutralFill) {
   if (level === 0) {
     if (emptyColor === 'filled') return { fill: neutralFill, stroke: neutralFill };
@@ -229,8 +240,9 @@ function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) 
   const W = graphW + paddingLeft + paddingRight;
   const H = 7 * step + paddingTop + paddingBottom;
 
+  const isGithub = preset === 'github';
   const isRainbow = preset === 'rainbow' || preset === 'rainbow2';
-  const presetTheme = preset && !isRainbow ? PRESETS[preset] : null;
+  const presetTheme = preset && !isRainbow && !isGithub ? PRESETS[preset] : null;
 
   let cells = '';
   let monthLabels = '';
@@ -267,7 +279,9 @@ function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) 
       const animStyle = animate ? ` style="animation:cellWave .3s linear ${delay}ms both"` : '';
 
       let fill, stroke;
-      if (presetTheme) {
+      if (isGithub) {
+        ({ fill, stroke } = getFillForGithubCell(level, isDark));
+      } else if (presetTheme) {
         const cellHex = presetTheme.getHex(wi, weeks.length, dow, isDark);
         ({ fill, stroke } = getFillForPresetCell(level, mode, cellHex, emptyColor, neutralStroke, neutralFill));
       } else if (purplePinkCellHex) {
@@ -278,7 +292,7 @@ function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) 
         ({ fill, stroke } = getFillForLevel(level, mode, activeColor, rgb, emptyColor, neutralStroke, neutralFill));
       }
 
-      const isFilledEmpty = level === 0 && emptyColor === 'filled';
+      const isFilledEmpty = level === 0 && (emptyColor === 'filled' || isGithub);
       if (level > 0 || isFilledEmpty) {
         cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="${fill}"${animStyle} />`;
       } else {
@@ -311,7 +325,7 @@ export default async function handler(req) {
   const modeParam = searchParams.get('mode');
   const mode = (modeParam === 'mono' || modeParam === 'solid') ? 'solid' : 'levels';
   const presetParam = searchParams.get('preset');
-  const VALID_PRESETS = ['rainbow', 'rainbow2', 'sunset', 'wave', 'girly', 'dev'];
+  const VALID_PRESETS = ['rainbow', 'rainbow2', 'sunset', 'wave', 'girly', 'dev', 'github'];
   const preset = VALID_PRESETS.includes(presetParam) ? presetParam : null;
   let color = (searchParams.get('color') || '6c63ff').replace('#', '');
   const animate = searchParams.get('animate') !== 'false';

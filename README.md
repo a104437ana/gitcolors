@@ -94,6 +94,15 @@ See your graph here: https://gitcolors.vercel.app
 </picture>
 </a>
 
+- 🐙 **GitHub** (identical to your real contribution graph)
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
+<picture>
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=dark&mode=mono&preset=github" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=github" media="(prefers-color-scheme: light)" />
+  <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=github" width="846" height="164" style="height:auto" />
+</picture>
+</a>
+
 ## Without theme (any color)
 - ✨ **Pink**
 <a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
@@ -130,12 +139,12 @@ See your graph here: https://gitcolors.vercel.app
 ## API
 You can also hit the API directly to generate the image, without going through the site:
 
-`https://gitcolors.vercel.app/api/svg?username=YOUR_USERNAME&color=HEX&theme=dark|light&mode=solid|levels&preset=rainbow|sunset|wave|girly|dev&animate=true|false&emptyColor=tint|neutral|filled`
+`https://gitcolors.vercel.app/api/svg?username=YOUR_USERNAME&color=HEX&theme=dark|light&mode=solid|levels&preset=rainbow|sunset|wave|girly|dev|github&animate=true|false&emptyColor=tint|neutral|filled`
 
 - `color` — hex color, no `#` (used when `preset` isn't set)
 - `theme` — `dark` or `light`
-- `mode` — `solid` (flat color) or `levels` (intensity-based)
-- `preset` — overrides `color` with a built-in palette (`rainbow`, `sunset`, `wave`, `girly`, `dev`)
+- `mode` — `solid` (flat color) or `levels` (intensity-based); ignored by the `github` preset, which always uses the real 5-tone GitHub scale
+- `preset` — overrides `color` with a built-in palette (`rainbow`, `sunset`, `wave`, `girly`, `dev`, `github`)
 - `animate` — set to `false` to disable the cell fade-in animation (default `true`)
 - `emptyColor` — `tint` (default) colors empty-day borders in the same hue as your graph; `neutral` uses a theme-based gray outline instead; `filled` solid-fills empty days with GitHub's own gray, for a look closer to the real contribution graph
 
