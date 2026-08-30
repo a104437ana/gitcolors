@@ -802,6 +802,7 @@
           <option value="dev">💻 dev</option>
           <option value="rainbow2">🌈 rainbow2</option>
           <option value="github">🐙 github</option>
+          <option value="githubpink">🐙💗 github pink</option>
         </select>
       </div>
     </div>
@@ -1089,7 +1090,22 @@ const THEMES = {
       return { fill: hex, stroke: hex };
     },
   },
+  githubpink: {
+    label: '🐙💗 github pink',
+    accent: '#ff5da2',
+    // mesma lógica do tema github (5 tons fixos, sem opacidade), mas em rosa
+    lightLevels: { 0: '#ebedf0', 1: '#ffd9ec', 2: '#ff9ccf', 3: '#ff5da2', 4: '#c9127a' },
+    darkLevels: { 0: '#161b22', 1: '#4a1030', 2: '#8a1257', 3: '#d81b7a', 4: '#ff5da2' },
+    getCellColor(wi, total, level) {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const hex = (isLight ? this.lightLevels : this.darkLevels)[level];
+      return { fill: hex, stroke: hex };
+    },
+  },
 };
+
+// temas com tons fixos (sem opacidade) que já preenchem os dias vazios sozinhos
+const FIXED_LEVEL_THEMES = ['github', 'githubpink'];
 
 function setRainbowMode(on) {
   rainbowMode = on;
@@ -1462,10 +1478,10 @@ function buildGraph(weeks, animate = true) {
         const theme = THEMES[currentThemeName] || THEMES.rainbow;
         const dayIdx = new Date(day.date).getDay();
         let { fill, stroke } = theme.getCellColor(wi, weeks.length, lv, graphMode, dayIdx);
-        if (lv === 0 && embedEmptyColor === 'neutral' && currentThemeName !== 'github') stroke = getNeutralEmptyStroke();
+        if (lv === 0 && embedEmptyColor === 'neutral' && !FIXED_LEVEL_THEMES.includes(currentThemeName)) stroke = getNeutralEmptyStroke();
         cellStyle += `background:${fill};border-color:${stroke};`;
       }
-      if (lv === 0 && embedEmptyColor === 'filled' && currentThemeName !== 'github') {
+      if (lv === 0 && embedEmptyColor === 'filled' && !FIXED_LEVEL_THEMES.includes(currentThemeName)) {
         const gh = getGithubEmptyFill();
         cellStyle += `background:${gh};border-color:${gh};`;
       }
@@ -1501,6 +1517,7 @@ function updateLegend() {
       girly: 'pink → purple over time',
       dev: 'dark green → neon green by weekday',
       github: 'the real GitHub green scale',
+      githubpink: 'the real GitHub scale, in pink',
     };
     const msg = messages[currentThemeName] || messages.rainbow;
     el.innerHTML = `<span>${msg}</span>`;

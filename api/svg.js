@@ -159,8 +159,14 @@ const GITHUB_LEVELS = {
   dark: { 0: '#161b22', 1: '#0e4429', 2: '#006d32', 3: '#26a641', 4: '#39d353' },
 };
 
-function getFillForGithubCell(level, isDark) {
-  const hex = (isDark ? GITHUB_LEVELS.dark : GITHUB_LEVELS.light)[level];
+// mesma lógica do GitHub (5 tons fixos, sem opacidade), mas em rosa
+const GITHUB_PINK_LEVELS = {
+  light: { 0: '#ebedf0', 1: '#ffd9ec', 2: '#ff9ccf', 3: '#ff5da2', 4: '#c9127a' },
+  dark: { 0: '#161b22', 1: '#4a1030', 2: '#8a1257', 3: '#d81b7a', 4: '#ff5da2' },
+};
+
+function getFillForFixedLevels(level, isDark, levels) {
+  const hex = (isDark ? levels.dark : levels.light)[level];
   return { fill: hex, stroke: hex };
 }
 
@@ -240,9 +246,9 @@ function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) 
   const W = graphW + paddingLeft + paddingRight;
   const H = 7 * step + paddingTop + paddingBottom;
 
-  const isGithub = preset === 'github';
+  const fixedLevelsPreset = preset === 'github' ? GITHUB_LEVELS : preset === 'githubpink' ? GITHUB_PINK_LEVELS : null;
   const isRainbow = preset === 'rainbow' || preset === 'rainbow2';
-  const presetTheme = preset && !isRainbow && !isGithub ? PRESETS[preset] : null;
+  const presetTheme = preset && !isRainbow && !fixedLevelsPreset ? PRESETS[preset] : null;
 
   let cells = '';
   let monthLabels = '';
@@ -279,8 +285,8 @@ function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) 
       const animStyle = animate ? ` style="animation:cellWave .3s linear ${delay}ms both"` : '';
 
       let fill, stroke;
-      if (isGithub) {
-        ({ fill, stroke } = getFillForGithubCell(level, isDark));
+      if (fixedLevelsPreset) {
+        ({ fill, stroke } = getFillForFixedLevels(level, isDark, fixedLevelsPreset));
       } else if (presetTheme) {
         const cellHex = presetTheme.getHex(wi, weeks.length, dow, isDark);
         ({ fill, stroke } = getFillForPresetCell(level, mode, cellHex, emptyColor, neutralStroke, neutralFill));
@@ -292,7 +298,7 @@ function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) 
         ({ fill, stroke } = getFillForLevel(level, mode, activeColor, rgb, emptyColor, neutralStroke, neutralFill));
       }
 
-      const isFilledEmpty = level === 0 && (emptyColor === 'filled' || isGithub);
+      const isFilledEmpty = level === 0 && (emptyColor === 'filled' || fixedLevelsPreset);
       if (level > 0 || isFilledEmpty) {
         cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="${fill}"${animStyle} />`;
       } else {
@@ -325,7 +331,7 @@ export default async function handler(req) {
   const modeParam = searchParams.get('mode');
   const mode = (modeParam === 'mono' || modeParam === 'solid') ? 'solid' : 'levels';
   const presetParam = searchParams.get('preset');
-  const VALID_PRESETS = ['rainbow', 'rainbow2', 'sunset', 'wave', 'girly', 'dev', 'github'];
+  const VALID_PRESETS = ['rainbow', 'rainbow2', 'sunset', 'wave', 'girly', 'dev', 'github', 'githubpink'];
   const preset = VALID_PRESETS.includes(presetParam) ? presetParam : null;
   let color = (searchParams.get('color') || '6c63ff').replace('#', '');
   const animate = searchParams.get('animate') !== 'false';
