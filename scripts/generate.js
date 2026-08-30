@@ -221,7 +221,7 @@ function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) 
   const textColor = isDark ? '#ffffff' : '#000000';
 
   const cellSize = 11, gap = 2, step = cellSize + gap;
-  const paddingLeft = 28, paddingTop = 20, paddingRight = 14, paddingBottom = 14;
+  const paddingLeft = 28, paddingTop = 32, paddingRight = 20, paddingBottom = 20;
   const graphW = weeks.length * step;
   const W = graphW + paddingLeft + paddingRight;
   const H = 7 * step + paddingTop + paddingBottom;
