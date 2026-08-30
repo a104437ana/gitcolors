@@ -69,6 +69,7 @@
       --lvl4: #2a1f5c;
       --shadow: 0 4px 24px rgba(0,0,0,0.35);
       --shadow-sm: 0 2px 8px rgba(0,0,0,0.25);
+      --github-empty-fill: #161b22;
     }
 
     [data-theme="light"] {
@@ -84,6 +85,7 @@
       --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
       --cell-empty: rgba(0,0,0,0.25);
       --mono-text: #000000;
+      --github-empty-fill: #ebedf0;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -372,6 +374,43 @@
     }
     .swatch:hover { transform: scale(1.2); }
     .swatch:active { transform: scale(0.95); }
+
+    .empty-style-row {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.3rem;
+    }
+    .empty-style-opt {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 0.3rem 0.35rem;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+    }
+    .empty-style-opt:hover { background: var(--surface2); }
+    .empty-style-opt.active { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+    .empty-style-opt:disabled { opacity: 0.4; cursor: not-allowed; }
+    .empty-style-opt:disabled:hover { background: transparent; }
+    .empty-style-text {
+      font-size: 0.55rem;
+      color: var(--text3);
+      letter-spacing: 0.03em;
+    }
+    .empty-style-opt.active .empty-style-text { color: var(--text2); font-weight: 700; }
+    .empty-preview {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      box-sizing: border-box;
+    }
+    .empty-preview-tint { background: transparent; border: 1.5px solid color-mix(in srgb, var(--accent) 45%, transparent); }
+    .empty-preview-neutral { background: transparent; border: 1.5px solid var(--text3); }
+    .empty-preview-filled { background: var(--github-empty-fill); border: 1.5px solid var(--github-empty-fill); }
 
     .search-row { display: flex; gap: 0.5rem; margin: 1.75rem 0 1.5rem; width: 100%;}
     .search-input {
@@ -789,11 +828,20 @@
           <input type="checkbox" id="animateCheckbox" checked autocomplete="off" onchange="setEmbedAnimate(this.checked)" />
           🎬 animate
         </label>
-        <select class="theme-select" id="emptyStyleSelect" autocomplete="off" onchange="setEmptyStyle(this.value)">
-          <option value="tint">⚪ tinted empty cells</option>
-          <option value="neutral" selected>⚪ neutral empty cells</option>
-          <option value="filled">🐙 github-style empty cells</option>
-        </select>
+        <div class="empty-style-row" id="emptyStyleRow">
+          <button type="button" class="empty-style-opt" data-value="tint" title="Tinted outline">
+            <span class="empty-preview empty-preview-tint"></span>
+            <span class="empty-style-text">tint</span>
+          </button>
+          <button type="button" class="empty-style-opt active" data-value="neutral" title="Neutral outline">
+            <span class="empty-preview empty-preview-neutral"></span>
+            <span class="empty-style-text">neutral</span>
+          </button>
+          <button type="button" class="empty-style-opt" data-value="filled" title="GitHub-style filled">
+            <span class="empty-preview empty-preview-filled"></span>
+            <span class="empty-style-text">filled</span>
+          </button>
+        </div>
         <label class="rainbow-toggle" for="rainbowCheckbox">
           <input type="checkbox" id="rainbowCheckbox" checked autocomplete="off" onchange="setRainbowMode(this.checked)" />
           🎨 theme
@@ -1161,10 +1209,16 @@ const FIXED_LEVEL_THEMES = ['github', 'githubpink', 'githubblue', 'githubpurple'
 
 // desliga/liga os controlos que não têm efeito nenhum quando um preset de tons fixos
 // (github, githubpink, ...) está ativo — em vez de os deixar clicáveis sem fazerem nada
+function setEmptyStyleActiveButton(value) {
+  document.querySelectorAll('.empty-style-opt').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.value === value);
+  });
+}
+
 function updateControlsAvailability() {
   const isFixed = rainbowMode && FIXED_LEVEL_THEMES.includes(currentThemeName);
   const modeTrack = document.getElementById('modeTrack');
-  const emptyStyleSelect = document.getElementById('emptyStyleSelect');
+  const emptyStyleButtons = document.querySelectorAll('.empty-style-opt');
   const solidLabel = document.getElementById('modeSolidLabel');
   const levelsLabel = document.getElementById('modeLevelsLabel');
 
@@ -1172,13 +1226,13 @@ function updateControlsAvailability() {
   solidLabel.classList.toggle('disabled', isFixed);
   levelsLabel.classList.toggle('disabled', isFixed);
 
-  emptyStyleSelect.disabled = isFixed;
-  // temas de tons fixos mostram sempre as células vazias preenchidas — o dropdown
-  // tem de refletir isso mesmo enquanto está desativado, senão o valor "escondido"
+  emptyStyleButtons.forEach(btn => { btn.disabled = isFixed; });
+  // temas de tons fixos mostram sempre as células vazias preenchidas — os botões têm
+  // de refletir isso mesmo enquanto estão desativados, senão o valor "escondido"
   // (ex. "neutral" de antes) reaparece de repente ao mudar para uma cor customizada
   if (isFixed) {
-    emptyStyleSelect.value = 'filled';
     embedEmptyColor = 'filled';
+    setEmptyStyleActiveButton('filled');
   }
 }
 
@@ -1211,9 +1265,10 @@ function getGithubEmptyFill() {
 }
 
 // única fonte de verdade para o estilo das células vazias — 'tint' | 'neutral' | 'filled'.
-// um só controlo (o dropdown) escreve aqui, por isso não há dois estados para manter sincronizados.
+// um só controlo (os 3 botões) escreve aqui, por isso não há dois estados para manter sincronizados.
 function setEmptyStyle(value) {
   embedEmptyColor = value;
+  setEmptyStyleActiveButton(value);
   if (rainbowMode) {
     const theme = THEMES[currentThemeName] || THEMES.rainbow;
     applyLiveColor(theme.accent);
@@ -1441,6 +1496,10 @@ document.querySelectorAll('.swatch').forEach(sw => {
     wheelHex.value = sw.dataset.hex;
     validateWheelHex();
   });
+});
+
+document.querySelectorAll('.empty-style-opt').forEach(btn => {
+  btn.addEventListener('click', () => setEmptyStyle(btn.dataset.value));
 });
 function validateWheelHex() {
   let v = wheelHex.value.trim();
