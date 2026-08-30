@@ -16,6 +16,16 @@ See your graph here: https://gitcolors.vercel.app
 </picture>
 </a>
 
+## Features
+- 🌈 GitHub contributions graph in any color you want
+- :octocat: Updates automatically based on your GitHub activity
+- 🌗 Supports both light and dark themes
+- 📱 Looks good on desktop and mobile
+- ⚡ Easy to integrate into any README or portfolio
+- 💻 Dedicated [website](https://gitcolors.vercel.app) to generate and view your graph
+- ✨ Beautiful preset themes like Rainbow, Sunset and more
+- 🎨 Multiple graph customization options
+
 ## ⚡ Quick Setup
 
 1. Go to https://gitcolors.vercel.app
@@ -108,16 +118,6 @@ See your graph here: https://gitcolors.vercel.app
   <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=light&mode=mono&preset=none&v=1" width="846" height="164" style="height:auto" />
 </picture>
 </a>
-
-## Features
-- 🌈 GitHub contributions graph in any color you want
-- :octocat: Updates automatically based on your GitHub activity
-- 🌗 Supports both light and dark themes
-- ⚡ Easy to integrate into any README or portfolio
-- 💻 Dedicated [website](https://gitcolors.vercel.app) to generate and view your graph
-- ✨ Beautiful preset themes like Rainbow, Sunset and more
-- 📊 View contributions by intensity or simply contributed / not contributed
-- 🎬 Cells fade in one by one when the image loads
 
 ## API
 You can also hit the API directly to generate the image, without going through the site:
