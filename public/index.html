@@ -803,6 +803,10 @@
           <option value="rainbow2">🌈 rainbow2</option>
           <option value="github">🐙 github</option>
           <option value="githubpink">🐙💗 github pink</option>
+          <option value="githubblue">🐙💙 github blue</option>
+          <option value="githubpurple">🐙💜 github purple</option>
+          <option value="githuborange">🐙🧡 github orange</option>
+          <option value="githubred">🐙❤️ github red</option>
         </select>
       </div>
     </div>
@@ -1093,9 +1097,53 @@ const THEMES = {
   githubpink: {
     label: '🐙💗 github pink',
     accent: '#ff5da2',
-    // mesma lógica do tema github (5 tons fixos, sem opacidade), mas em rosa
+    // mesma lógica do tema github (5 tons fixos, sem opacidade), mas noutra cor
     lightLevels: { 0: '#ebedf0', 1: '#ffd9ec', 2: '#ff9ccf', 3: '#ff5da2', 4: '#c9127a' },
     darkLevels: { 0: '#161b22', 1: '#4a1030', 2: '#8a1257', 3: '#d81b7a', 4: '#ff5da2' },
+    getCellColor(wi, total, level) {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const hex = (isLight ? this.lightLevels : this.darkLevels)[level];
+      return { fill: hex, stroke: hex };
+    },
+  },
+  githubblue: {
+    label: '🐙💙 github blue',
+    accent: '#0969da',
+    lightLevels: { 0: '#ebedf0', 1: '#b6e3ff', 2: '#54aeff', 3: '#0969da', 4: '#0a3069' },
+    darkLevels: { 0: '#161b22', 1: '#08306b', 2: '#0969da', 3: '#388bfd', 4: '#79c0ff' },
+    getCellColor(wi, total, level) {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const hex = (isLight ? this.lightLevels : this.darkLevels)[level];
+      return { fill: hex, stroke: hex };
+    },
+  },
+  githubpurple: {
+    label: '🐙💜 github purple',
+    accent: '#8250df',
+    lightLevels: { 0: '#ebedf0', 1: '#ecd8ff', 2: '#c297ff', 3: '#8250df', 4: '#512a97' },
+    darkLevels: { 0: '#161b22', 1: '#3c1e70', 2: '#6639ba', 3: '#8250df', 4: '#c297ff' },
+    getCellColor(wi, total, level) {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const hex = (isLight ? this.lightLevels : this.darkLevels)[level];
+      return { fill: hex, stroke: hex };
+    },
+  },
+  githuborange: {
+    label: '🐙🧡 github orange',
+    accent: '#bd561d',
+    lightLevels: { 0: '#ebedf0', 1: '#ffd8b5', 2: '#fb8f44', 3: '#bd561d', 4: '#762c00' },
+    darkLevels: { 0: '#161b22', 1: '#762c00', 2: '#bd561d', 3: '#e16f24', 4: '#fb8f44' },
+    getCellColor(wi, total, level) {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const hex = (isLight ? this.lightLevels : this.darkLevels)[level];
+      return { fill: hex, stroke: hex };
+    },
+  },
+  githubred: {
+    label: '🐙❤️ github red',
+    accent: '#cf222e',
+    lightLevels: { 0: '#ebedf0', 1: '#ffcecb', 2: '#ff8182', 3: '#cf222e', 4: '#82061d' },
+    darkLevels: { 0: '#161b22', 1: '#82061d', 2: '#cf222e', 3: '#fa4549', 4: '#ff8182' },
     getCellColor(wi, total, level) {
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
       const hex = (isLight ? this.lightLevels : this.darkLevels)[level];
@@ -1105,7 +1153,7 @@ const THEMES = {
 };
 
 // temas com tons fixos (sem opacidade) que já preenchem os dias vazios sozinhos
-const FIXED_LEVEL_THEMES = ['github', 'githubpink'];
+const FIXED_LEVEL_THEMES = ['github', 'githubpink', 'githubblue', 'githubpurple', 'githuborange', 'githubred'];
 
 function setRainbowMode(on) {
   rainbowMode = on;
@@ -1518,6 +1566,10 @@ function updateLegend() {
       dev: 'dark green → neon green by weekday',
       github: 'the real GitHub green scale',
       githubpink: 'the real GitHub scale, in pink',
+      githubblue: 'the real GitHub scale, in blue',
+      githubpurple: 'the real GitHub scale, in purple',
+      githuborange: 'the real GitHub scale, in orange',
+      githubred: 'the real GitHub scale, in red',
     };
     const msg = messages[currentThemeName] || messages.rainbow;
     el.innerHTML = `<span>${msg}</span>`;

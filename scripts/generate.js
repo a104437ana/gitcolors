@@ -162,10 +162,35 @@ const GITHUB_LEVELS = {
   dark: { 0: '#161b22', 1: '#0e4429', 2: '#006d32', 3: '#26a641', 4: '#39d353' },
 };
 
-// mesma lógica do GitHub (5 tons fixos, sem opacidade), mas em rosa
+// mesma lógica do GitHub (5 tons fixos, sem opacidade), noutras cores — tons tirados da paleta oficial do Primer
 const GITHUB_PINK_LEVELS = {
   light: { 0: '#ebedf0', 1: '#ffd9ec', 2: '#ff9ccf', 3: '#ff5da2', 4: '#c9127a' },
   dark: { 0: '#161b22', 1: '#4a1030', 2: '#8a1257', 3: '#d81b7a', 4: '#ff5da2' },
+};
+const GITHUB_BLUE_LEVELS = {
+  light: { 0: '#ebedf0', 1: '#b6e3ff', 2: '#54aeff', 3: '#0969da', 4: '#0a3069' },
+  dark: { 0: '#161b22', 1: '#08306b', 2: '#0969da', 3: '#388bfd', 4: '#79c0ff' },
+};
+const GITHUB_PURPLE_LEVELS = {
+  light: { 0: '#ebedf0', 1: '#ecd8ff', 2: '#c297ff', 3: '#8250df', 4: '#512a97' },
+  dark: { 0: '#161b22', 1: '#3c1e70', 2: '#6639ba', 3: '#8250df', 4: '#c297ff' },
+};
+const GITHUB_ORANGE_LEVELS = {
+  light: { 0: '#ebedf0', 1: '#ffd8b5', 2: '#fb8f44', 3: '#bd561d', 4: '#762c00' },
+  dark: { 0: '#161b22', 1: '#762c00', 2: '#bd561d', 3: '#e16f24', 4: '#fb8f44' },
+};
+const GITHUB_RED_LEVELS = {
+  light: { 0: '#ebedf0', 1: '#ffcecb', 2: '#ff8182', 3: '#cf222e', 4: '#82061d' },
+  dark: { 0: '#161b22', 1: '#82061d', 2: '#cf222e', 3: '#fa4549', 4: '#ff8182' },
+};
+
+const FIXED_LEVEL_PRESETS = {
+  github: GITHUB_LEVELS,
+  githubpink: GITHUB_PINK_LEVELS,
+  githubblue: GITHUB_BLUE_LEVELS,
+  githubpurple: GITHUB_PURPLE_LEVELS,
+  githuborange: GITHUB_ORANGE_LEVELS,
+  githubred: GITHUB_RED_LEVELS,
 };
 
 function getFillForFixedLevels(level, isDark, levels) {
@@ -248,7 +273,7 @@ function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) 
   const W = graphW + paddingLeft + paddingRight;
   const H = 7 * step + paddingTop + paddingBottom;
 
-  const fixedLevelsPreset = preset === 'github' ? GITHUB_LEVELS : preset === 'githubpink' ? GITHUB_PINK_LEVELS : null;
+  const fixedLevelsPreset = FIXED_LEVEL_PRESETS[preset] || null;
   const isRainbow = preset === 'rainbow' || preset === 'rainbow2';
   const presetTheme = preset && !isRainbow && !fixedLevelsPreset ? PRESETS[preset] : null;
 
@@ -387,7 +412,7 @@ async function main() {
   if (!isValidHex(color)) color = '6c63ff';
   const mode = process.env.GITCOLORS_MODE === 'levels' ? 'levels' : 'solid';
   const presetParam = process.env.GITCOLORS_PRESET;
-  const VALID_PRESETS = ['rainbow', 'rainbow2', 'sunset', 'wave', 'girly', 'dev', 'github', 'githubpink'];
+  const VALID_PRESETS = ['rainbow', 'rainbow2', 'sunset', 'wave', 'girly', 'dev', 'github', 'githubpink', 'githubblue', 'githubpurple', 'githuborange', 'githubred'];
   const preset = VALID_PRESETS.includes(presetParam) ? presetParam : null;
   const animate = process.env.GITCOLORS_ANIMATE !== 'false';
   const rawEmptyColor = process.env.GITCOLORS_EMPTY_COLOR;
