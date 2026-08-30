@@ -270,11 +270,11 @@ jobs:
 
 ⚠️ The graph may take a minute to appear after the workflow runs for the first time, but after that it will always be there and update automatically every day based on your GitHub activity
 
-## Support
-If you like this project, please consider giving it a star ⭐
-
 ## Also check out
 Want your GitHub contributions as a garden of flowers instead? Check out [sakura garden](https://sakura-garden.vercel.app/)
+
+## Support
+If you like this project, please consider giving it a star ⭐
 
 ## Stars
 [![GitHub stars](https://img.shields.io/github/stars/a104437ana/gitcolors?style=social&label=Stars)](https://github.com/a104437ana/gitcolors/stargazers/)
