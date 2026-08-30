@@ -1405,6 +1405,7 @@ function uncheckRainbowBox() {
   if (box) box.checked = false;
   const select = document.getElementById('themeSelect');
   if (select) select.classList.add('hidden');
+  updateControlsAvailability();
 }
 
 function pickFromSVEvent(e) {
