@@ -153,8 +153,9 @@ const PRESETS = {
   },
 };
 
-function getFillForLevel(level, mode, activeColor, rgb, emptyColor, neutralStroke) {
+function getFillForLevel(level, mode, activeColor, rgb, emptyColor, neutralStroke, neutralFill) {
   if (level === 0) {
+    if (emptyColor === 'filled') return { fill: neutralFill, stroke: neutralFill };
     const stroke = emptyColor === 'neutral' ? neutralStroke : `rgba(${rgb},0.4)`;
     return { fill: 'none', stroke };
   }
@@ -170,11 +171,12 @@ function getFillForLevel(level, mode, activeColor, rgb, emptyColor, neutralStrok
   return { fill: activeColor, stroke: activeColor };
 }
 
-function getFillForRainbowCell(level, mode, hue, emptyColor, neutralStroke) {
+function getFillForRainbowCell(level, mode, hue, emptyColor, neutralStroke, neutralFill) {
   const cellHex = hslToHex(hue, 70, 55);
   const cellRgb = hexToRgb(cellHex.slice(1));
 
   if (level === 0) {
+    if (emptyColor === 'filled') return { fill: neutralFill, stroke: neutralFill };
     const stroke = emptyColor === 'neutral' ? neutralStroke : `rgba(${cellRgb},0.35)`;
     return { fill: 'none', stroke };
   }
@@ -190,10 +192,11 @@ function getFillForRainbowCell(level, mode, hue, emptyColor, neutralStroke) {
   return { fill: cellHex, stroke: cellHex };
 }
 
-function getFillForPresetCell(level, mode, hex, emptyColor, neutralStroke) {
+function getFillForPresetCell(level, mode, hex, emptyColor, neutralStroke, neutralFill) {
   const rgb = hexToRgb(hex.replace('#', ''));
 
   if (level === 0) {
+    if (emptyColor === 'filled') return { fill: neutralFill, stroke: neutralFill };
     const stroke = emptyColor === 'neutral' ? neutralStroke : `rgba(${rgb},0.35)`;
     return { fill: 'none', stroke };
   }
@@ -215,6 +218,8 @@ function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) 
   const rgb = hexToRgb(colorHex);
   // 'neutral' = cinza dependente só do tema, independente da cor ativa; 'tint' (default) = tom da cor ativa, como era antes
   const neutralStroke = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.18)';
+  // cinza sólido igual ao das células vazias do grafo real do GitHub
+  const neutralFill = isDark ? '#161b22' : '#ebedf0';
   const textColor = isDark ? '#ffffff' : '#000000';
   const fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif";
 
@@ -264,16 +269,17 @@ function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) 
       let fill, stroke;
       if (presetTheme) {
         const cellHex = presetTheme.getHex(wi, weeks.length, dow, isDark);
-        ({ fill, stroke } = getFillForPresetCell(level, mode, cellHex, emptyColor, neutralStroke));
+        ({ fill, stroke } = getFillForPresetCell(level, mode, cellHex, emptyColor, neutralStroke, neutralFill));
       } else if (purplePinkCellHex) {
-        ({ fill, stroke } = getFillForPresetCell(level, mode, purplePinkCellHex, emptyColor, neutralStroke));
+        ({ fill, stroke } = getFillForPresetCell(level, mode, purplePinkCellHex, emptyColor, neutralStroke, neutralFill));
       } else if (isRainbow) {
-        ({ fill, stroke } = getFillForRainbowCell(level, mode, hue, emptyColor, neutralStroke));
+        ({ fill, stroke } = getFillForRainbowCell(level, mode, hue, emptyColor, neutralStroke, neutralFill));
       } else {
-        ({ fill, stroke } = getFillForLevel(level, mode, activeColor, rgb, emptyColor, neutralStroke));
+        ({ fill, stroke } = getFillForLevel(level, mode, activeColor, rgb, emptyColor, neutralStroke, neutralFill));
       }
 
-      if (level > 0) {
+      const isFilledEmpty = level === 0 && emptyColor === 'filled';
+      if (level > 0 || isFilledEmpty) {
         cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="${fill}"${animStyle} />`;
       } else {
         cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="none" stroke="${stroke}" stroke-width="1"${animStyle} />`;
@@ -309,7 +315,8 @@ export default async function handler(req) {
   const preset = VALID_PRESETS.includes(presetParam) ? presetParam : null;
   let color = (searchParams.get('color') || '6c63ff').replace('#', '');
   const animate = searchParams.get('animate') !== 'false';
-  const emptyColor = searchParams.get('emptyColor') === 'neutral' ? 'neutral' : 'tint';
+  const rawEmptyColor = searchParams.get('emptyColor');
+  const emptyColor = (rawEmptyColor === 'neutral' || rawEmptyColor === 'filled') ? rawEmptyColor : 'tint';
 
   if (!username) {
     return new Response('Username required', { status: 400 });

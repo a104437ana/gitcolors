@@ -748,6 +748,10 @@
           <input type="checkbox" id="emptyColorCheckbox" checked autocomplete="off" onchange="setEmptyColorMode(this.checked)" />
           ⚪ neutral empty cells
         </label>
+        <label class="rainbow-toggle" for="filledEmptyCheckbox">
+          <input type="checkbox" id="filledEmptyCheckbox" autocomplete="off" onchange="setFilledEmptyMode(this.checked)" />
+          🐙 github-style empty cells
+        </label>
         <label class="rainbow-toggle" for="rainbowCheckbox">
           <input type="checkbox" id="rainbowCheckbox" checked autocomplete="off" onchange="setRainbowMode(this.checked)" />
           🎨 theme
@@ -793,7 +797,7 @@ function toggleTheme() {
   if (embedEmptyColor === 'neutral') {
     document.documentElement.style.setProperty('--cell-empty', getNeutralEmptyStroke());
   }
-  if (rainbowMode) refreshGraph();
+  if (rainbowMode || embedEmptyColor === 'filled') refreshGraph();
 }
 
 initTheme();
@@ -1060,6 +1064,26 @@ function setEmbedAnimate(on) {
 
 function setEmptyColorMode(on) {
   embedEmptyColor = on ? 'neutral' : 'tint';
+  if (rainbowMode) {
+    const theme = THEMES[currentThemeName] || THEMES.rainbow;
+    applyLiveColor(theme.accent);
+  } else {
+    applyLiveColor(hsvToHex(pickerHue, pickerSat, pickerVal));
+  }
+  refreshGraph();
+  updateEmbedCode();
+  if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
+}
+
+function getGithubEmptyFill() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  return isLight ? '#ebedf0' : '#161b22';
+}
+
+function setFilledEmptyMode(on) {
+  const neutralCheckbox = document.getElementById('emptyColorCheckbox');
+  embedEmptyColor = on ? 'filled' : (neutralCheckbox.checked ? 'neutral' : 'tint');
+  neutralCheckbox.disabled = on;
   if (rainbowMode) {
     const theme = THEMES[currentThemeName] || THEMES.rainbow;
     applyLiveColor(theme.accent);
@@ -1383,6 +1407,10 @@ function buildGraph(weeks, animate = true) {
         if (lv === 0 && embedEmptyColor === 'neutral') stroke = getNeutralEmptyStroke();
         cellStyle += `background:${fill};border-color:${stroke};`;
       }
+      if (lv === 0 && embedEmptyColor === 'filled') {
+        const gh = getGithubEmptyFill();
+        cellStyle += `background:${gh};border-color:${gh};`;
+      }
       const cellClass = animate ? 'day-cell bloom-cell' : 'day-cell';
       if (animate) cellStyle += `--delay:${wi * 20 + ci * 10}ms;`;
       weeksHtml += `<div class="${cellClass}" data-level="${lv}" data-count="${day.contributionCount}" data-date="${day.date}" style="${cellStyle}"></div>`;
@@ -1420,10 +1448,14 @@ function updateLegend() {
     return;
   }
 
+  const emptyDotStyle = embedEmptyColor === 'filled'
+    ? `background:${getGithubEmptyFill()};border:1px solid ${getGithubEmptyFill()}`
+    : `background:transparent;border:1px solid var(--cell-empty)`;
+
   if (graphMode === 'levels') {
     el.innerHTML = `
       <span>less</span>
-      <span class="legend-dot" style="background:transparent;border:1px solid var(--cell-empty)"></span>
+      <span class="legend-dot" style="${emptyDotStyle}"></span>
       <span class="legend-dot" style="background:var(--lvl1)"></span>
       <span class="legend-dot" style="background:var(--lvl2)"></span>
       <span class="legend-dot" style="background:var(--lvl3)"></span>
@@ -1433,7 +1465,7 @@ function updateLegend() {
   } else {
     const hex = hsvToHex(pickerHue, pickerSat, pickerVal);
     el.innerHTML = `
-      <span class="legend-dot" style="background:transparent;border:1px solid var(--cell-empty)"></span>
+      <span class="legend-dot" style="${emptyDotStyle}"></span>
       <span>no contributions</span>
       <span class="legend-dot" style="margin-left:0.5rem;background:${hex}"></span>
       <span>contributed</span>
