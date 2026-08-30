@@ -514,6 +514,7 @@
       text-align: center;
     }
     .mode-label.active { color: var(--text2); font-weight: 700; }
+    .mode-label.disabled { opacity: 0.4; }
     .mode-track {
       position: relative;
       width: 36px;
@@ -528,6 +529,8 @@
     }
     .mode-track:hover { opacity: 0.85; }
     .mode-track.on { background: var(--accent); }
+    .mode-track:disabled { opacity: 0.4; cursor: not-allowed; }
+    .mode-track:disabled:hover { opacity: 0.4; }
     .mode-thumb {
       position: absolute;
       top: 3px; left: 3px;
@@ -550,6 +553,9 @@
       transition: color 0.2s;
     }
     .rainbow-toggle:hover { color: var(--text2); }
+    .rainbow-toggle:has(input:disabled) { opacity: 0.4; cursor: not-allowed; }
+    .rainbow-toggle:has(input:disabled):hover { color: var(--text3); }
+    .rainbow-toggle input:disabled { cursor: not-allowed; }
     .rainbow-toggle input { cursor: pointer; accent-color: var(--accent); }
     .theme-select {
       margin-top: 0.3rem;
@@ -1155,6 +1161,24 @@ const THEMES = {
 // temas com tons fixos (sem opacidade) que já preenchem os dias vazios sozinhos
 const FIXED_LEVEL_THEMES = ['github', 'githubpink', 'githubblue', 'githubpurple', 'githuborange', 'githubred'];
 
+// desliga/liga os controlos que não têm efeito nenhum quando um preset de tons fixos
+// (github, githubpink, ...) está ativo — em vez de os deixar clicáveis sem fazerem nada
+function updateControlsAvailability() {
+  const isFixed = rainbowMode && FIXED_LEVEL_THEMES.includes(currentThemeName);
+  const modeTrack = document.getElementById('modeTrack');
+  const emptyCheckbox = document.getElementById('emptyColorCheckbox');
+  const filledCheckbox = document.getElementById('filledEmptyCheckbox');
+  const solidLabel = document.getElementById('modeSolidLabel');
+  const levelsLabel = document.getElementById('modeLevelsLabel');
+
+  modeTrack.disabled = isFixed;
+  solidLabel.classList.toggle('disabled', isFixed);
+  levelsLabel.classList.toggle('disabled', isFixed);
+
+  filledCheckbox.disabled = isFixed;
+  emptyCheckbox.disabled = isFixed || filledCheckbox.checked;
+}
+
 function setRainbowMode(on) {
   rainbowMode = on;
   const select = document.getElementById('themeSelect');
@@ -1165,6 +1189,7 @@ function setRainbowMode(on) {
   } else {
     applyLiveColor(hsvToHex(pickerHue, pickerSat, pickerVal));
   }
+  updateControlsAvailability();
   refreshGraph();
   updateEmbedCode();
   if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
@@ -1198,7 +1223,7 @@ function getGithubEmptyFill() {
 function setFilledEmptyMode(on) {
   const neutralCheckbox = document.getElementById('emptyColorCheckbox');
   embedEmptyColor = on ? 'filled' : (neutralCheckbox.checked ? 'neutral' : 'tint');
-  neutralCheckbox.disabled = on;
+  updateControlsAvailability();
   if (rainbowMode) {
     const theme = THEMES[currentThemeName] || THEMES.rainbow;
     applyLiveColor(theme.accent);
@@ -1214,6 +1239,7 @@ function setTheme(name) {
   currentThemeName = name;
   const theme = THEMES[name] || THEMES.rainbow;
   applyLiveColor(theme.accent);
+  updateControlsAvailability();
   refreshGraph();
   updateEmbedCode();
   if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
