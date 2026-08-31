@@ -295,4 +295,5 @@ Want your GitHub contributions as a garden of flowers instead? Check out [sakura
 If you like this project, please consider giving it a star ⭐
 
 ## Stars
-[![GitHub stars](https://img.shields.io/github/stars/a104437ana/gitcolors?style=social&label=Stars)](https://github.com/a104437ana/gitcolors/stargazers/)
+[![a104437ana/gitcolors stars](https://repo-stars.vercel.app/api/stars-badge?repo=a104437ana%2Fgitcolors)](https://github.com/a104437ana/gitcolors/stargazers)
+[![a104437ana/gitcolors stars](https://repo-stars.vercel.app/api/svg?repo=a104437ana%2Fgitcolors)](https://github.com/a104437ana/gitcolors/stargazers)
