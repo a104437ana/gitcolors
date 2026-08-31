@@ -1,8 +1,8 @@
-# gitcolors
+# 🎨 gitcolors
 
-## GitHub contributions graph in any color 🌈
+## A GitHub contributions graph in any color for your README 🌈
 
-A simple tool to **customize your GitHub contributions graph** with **any color and theme** you want.
+A simple tool to **customize your GitHub contributions graph** with **any color or theme** you want.
 
 Perfect for **adding a personal touch to your README** — quick and easy, **ready in seconds** through the [website](https://gitcolors.vercel.app).
 
