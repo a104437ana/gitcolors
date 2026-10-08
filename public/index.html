@@ -1407,9 +1407,12 @@ function applyLiveColor(hex) {
   root.style.setProperty('--accent', hex);
   root.style.setProperty('--cell-empty', embedEmptyColor === 'neutral' ? getNeutralEmptyStroke() : `rgba(${rgb}, 0.4)`);
   if (embedSingleImage) {
-    // pré-visualiza o que o theme=auto da API realmente produz: letras cinza, contorno cinza translúcido
+    // pré-visualiza o que o theme=auto da API realmente produz: letras cinza sempre;
+    // 'tint' mantém-se igual (já não depende do tema); 'filled' é tratado à parte, abaixo
     root.style.setProperty('--mono-text', '#787878');
-    root.style.setProperty('--cell-empty', 'rgba(120,120,120,0.4)');
+    if (embedEmptyColor === 'neutral') {
+      root.style.setProperty('--cell-empty', 'rgba(120,120,120,0.4)');
+    }
   } else {
     root.style.removeProperty('--mono-text');
   }
@@ -1662,11 +1665,15 @@ function buildGraph(weeks, animate = true) {
         const theme = THEMES[currentThemeName] || THEMES.rainbow;
         const dayIdx = new Date(day.date).getDay();
         let { fill, stroke } = theme.getCellColor(wi, weeks.length, lv, graphMode, dayIdx);
-        if (lv === 0 && embedEmptyColor === 'neutral' && !FIXED_LEVEL_THEMES.includes(currentThemeName)) stroke = getNeutralEmptyStroke();
+        if (lv === 0 && embedEmptyColor === 'neutral' && !FIXED_LEVEL_THEMES.includes(currentThemeName)) {
+          stroke = embedSingleImage ? 'rgba(120,120,120,0.4)' : getNeutralEmptyStroke();
+        }
         cellStyle += `background:${fill};border-color:${stroke};`;
       }
       if (lv === 0 && embedEmptyColor === 'filled' && !(rainbowMode && FIXED_LEVEL_THEMES.includes(currentThemeName))) {
-        const gh = getGithubEmptyFill();
+        // em modo auto não há como saber se o fundo é claro ou escuro, por isso em vez do cinza
+        // exato do GitHub usa-se um cinza translúcido universal — igual ao que a API produz
+        const gh = embedSingleImage ? 'rgba(120,120,120,0.25)' : getGithubEmptyFill();
         cellStyle += `background:${gh};border-color:${gh};`;
       }
       const cellClass = animate ? 'day-cell bloom-cell' : 'day-cell';

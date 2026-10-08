@@ -264,15 +264,13 @@ function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) 
   const AUTO_GRAY = '120,120,120';
   // 'neutral' = cinza dependente só do tema, independente da cor ativa; 'tint' (default) = tom da cor ativa, como era antes
   const neutralStroke = isAuto ? `rgba(${AUTO_GRAY},0.4)` : isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.18)';
-  // cinza sólido igual ao das células vazias do grafo real do GitHub (não existe um "auto" universal para isto,
-  // por isso o modo auto trata 'filled' como 'neutral' — ver abaixo)
-  const neutralFill = isDark ? '#161b22' : '#ebedf0';
+  // 'filled' usa normalmente o cinzento exato do fundo do GitHub, mas isso exige saber se o fundo é
+  // claro ou escuro — em modo auto usa-se em vez disso o mesmo cinza translúcido do 'neutral', sólido
+  // em vez de contorno, que fica legível em qualquer fundo sem precisar de o adivinhar
+  const neutralFill = isAuto ? `rgba(${AUTO_GRAY},0.25)` : isDark ? '#161b22' : '#ebedf0';
   // #787878 dá ~4.3:1 de contraste tanto contra branco como contra o fundo escuro do GitHub
   const textColor = isAuto ? '#787878' : isDark ? '#ffffff' : '#000000';
   const fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif";
-  // 'filled' pinta as células vazias com o cinzento exato do fundo do GitHub — isso só funciona quando
-  // se sabe se o fundo é claro ou escuro, o que não existe em modo auto, por isso cai para 'neutral'
-  emptyColor = isAuto && emptyColor === 'filled' ? 'neutral' : emptyColor;
 
   const cellSize = 11, gap = 2, step = cellSize + gap;
   const paddingLeft = 28, paddingTop = 32, paddingRight = 20, paddingBottom = 20;

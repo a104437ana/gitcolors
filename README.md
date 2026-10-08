@@ -226,7 +226,7 @@ You can also hit the API directly to generate the image, without going through t
 - `mode` — `solid` (flat color) or `levels` (intensity-based); ignored by the `github*` presets, which always use their fixed 5-tone scale
 - `preset` — overrides `color` with a built-in palette (`rainbow`, `sunset`, `wave`, `girly`, `dev`, `github`, `githubpink`, `githubblue`, `githubpurple`, `githuborange`, `githubred`)
 - `animate` — set to `false` to disable the cell fade-in animation (default `true`)
-- `emptyColor` — `tint` (default) colors empty-day borders in the same hue as your graph; `neutral` uses a theme-based gray outline instead; `filled` solid-fills empty days with GitHub's own gray, for a look closer to the real contribution graph (with `theme=auto`, `filled` falls back to `neutral`, since there's no single gray that matches both an unknown light and dark background)
+- `emptyColor` — `tint` (default) colors empty-day borders in the same hue as your graph; `neutral` uses a theme-based gray outline instead; `filled` solid-fills empty days with GitHub's own gray, for a look closer to the real contribution graph (with `theme=auto`, `filled` uses a translucent gray fill instead, since there's no single solid gray that matches both an unknown light and dark background)
 
 ## 🔧 Manual Setup
 If you want an image that automatically switches between dark and light depending on the user's system theme, you can set it up like this:
