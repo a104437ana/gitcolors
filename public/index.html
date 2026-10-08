@@ -845,6 +845,10 @@
           <input type="checkbox" id="animateCheckbox" checked autocomplete="off" onchange="setEmbedAnimate(this.checked)" />
           🎬 animate
         </label>
+        <label class="rainbow-toggle" for="singleImageCheckbox" title="One image that reads fine in both light and dark README mode, instead of two switched by media query">
+          <input type="checkbox" id="singleImageCheckbox" autocomplete="off" onchange="setSingleImage(this.checked)" />
+          🖼️ single image
+        </label>
         <div class="empty-style-row" id="emptyStyleRow">
           <button type="button" class="empty-style-opt" data-value="tint" title="Tinted outline">
             <span class="empty-preview empty-preview-tint"></span>
@@ -907,7 +911,7 @@ function toggleTheme() {
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('gitcolors-theme', next);
-  if (embedEmptyColor === 'neutral') {
+  if (embedEmptyColor === 'neutral' && !embedSingleImage) {
     document.documentElement.style.setProperty('--cell-empty', getNeutralEmptyStroke());
   }
   if (rainbowMode || embedEmptyColor === 'filled') refreshGraph();
@@ -1004,6 +1008,7 @@ let graphMode = 'mono'; // 'mono' | 'levels'
 let rainbowMode = true;   // tema ligado por defeito
 let currentThemeName = 'rainbow';
 let embedAnimate = true;  // controla o &animate= do embed exportado, não afeta o preview
+let embedSingleImage = false;  // true = 1 imagem só (theme=auto, letras cinza), sem <picture>/<source>
 let embedEmptyColor = 'neutral';  // default no site é 'neutral' (mais legível); a API mantém 'tint' como default para não mudar embeds antigos
 let lastWeeksData = null;
 
@@ -1276,6 +1281,18 @@ function setEmbedAnimate(on) {
   if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
 }
 
+function setSingleImage(on) {
+  embedSingleImage = on;
+  if (rainbowMode) {
+    const theme = THEMES[currentThemeName] || THEMES.rainbow;
+    applyLiveColor(theme.accent);
+  } else {
+    applyLiveColor(hsvToHex(pickerHue, pickerSat, pickerVal));
+  }
+  updateEmbedCode();
+  if (typeof resetQuickCopyState === 'function') resetQuickCopyState();
+}
+
 function getGithubEmptyFill() {
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
   return isLight ? '#ebedf0' : '#161b22';
@@ -1389,6 +1406,13 @@ function applyLiveColor(hex) {
   root.style.setProperty('--c4', hex);
   root.style.setProperty('--accent', hex);
   root.style.setProperty('--cell-empty', embedEmptyColor === 'neutral' ? getNeutralEmptyStroke() : `rgba(${rgb}, 0.4)`);
+  if (embedSingleImage) {
+    // pré-visualiza o que o theme=auto da API realmente produz: letras cinza, contorno cinza translúcido
+    root.style.setProperty('--mono-text', '#787878');
+    root.style.setProperty('--cell-empty', 'rgba(120,120,120,0.4)');
+  } else {
+    root.style.removeProperty('--mono-text');
+  }
   const hl = document.querySelector('.highlight');
   if (hl) hl.style.backgroundImage = `linear-gradient(135deg,${hex},${hex}dd)`;
   updateLegend();
@@ -1791,6 +1815,10 @@ function getEmbedUrl(theme) {
 }
 
 function getEmbedCode() {
+  if (embedSingleImage) {
+    const u = getEmbedUrl('auto');
+    return `<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">\n  <picture>\n    <img src="${u}" width="846" height="164" style="height:auto" />\n  </picture>\n</a>`;
+  }
   const l=getEmbedUrl('light'), d=getEmbedUrl('dark');
   return `<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">\n  <picture>\n    <source srcset="${d}" media="(prefers-color-scheme: dark)" />\n    <source srcset="${l}" media="(prefers-color-scheme: light)" />\n    <img src="${l}" width="846" height="164" style="height:auto" />\n  </picture>\n</a>`;
 }

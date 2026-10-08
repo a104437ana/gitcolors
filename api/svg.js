@@ -256,14 +256,23 @@ function getFillForPresetCell(level, mode, hex, emptyColor, neutralStroke, neutr
 
 function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) {
   const isDark = theme === 'dark';
+  const isAuto = theme === 'auto';
   const activeColor = `#${colorHex}`;
   const rgb = hexToRgb(colorHex);
+  // 'auto' = paleta cinza neutra, sem depender do tema — lê-se tanto em fundo claro como escuro,
+  // por isso dá para usar uma só imagem sem <picture>/<source>
+  const AUTO_GRAY = '120,120,120';
   // 'neutral' = cinza dependente só do tema, independente da cor ativa; 'tint' (default) = tom da cor ativa, como era antes
-  const neutralStroke = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.18)';
-  // cinza sólido igual ao das células vazias do grafo real do GitHub
+  const neutralStroke = isAuto ? `rgba(${AUTO_GRAY},0.4)` : isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.18)';
+  // cinza sólido igual ao das células vazias do grafo real do GitHub (não existe um "auto" universal para isto,
+  // por isso o modo auto trata 'filled' como 'neutral' — ver abaixo)
   const neutralFill = isDark ? '#161b22' : '#ebedf0';
-  const textColor = isDark ? '#ffffff' : '#000000';
+  // #787878 dá ~4.3:1 de contraste tanto contra branco como contra o fundo escuro do GitHub
+  const textColor = isAuto ? '#787878' : isDark ? '#ffffff' : '#000000';
   const fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif";
+  // 'filled' pinta as células vazias com o cinzento exato do fundo do GitHub — isso só funciona quando
+  // se sabe se o fundo é claro ou escuro, o que não existe em modo auto, por isso cai para 'neutral'
+  emptyColor = isAuto && emptyColor === 'filled' ? 'neutral' : emptyColor;
 
   const cellSize = 11, gap = 2, step = cellSize + gap;
   const paddingLeft = 28, paddingTop = 32, paddingRight = 20, paddingBottom = 20;
@@ -352,7 +361,8 @@ function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) 
 export default async function handler(req) {
   const { searchParams } = new URL(req.url);
   const username = searchParams.get('username');
-  const theme = searchParams.get('theme') === 'dark' ? 'dark' : 'light';
+  const themeParam = searchParams.get('theme');
+  const theme = themeParam === 'dark' ? 'dark' : themeParam === 'auto' ? 'auto' : 'light';
   const modeParam = searchParams.get('mode');
   const mode = (modeParam === 'mono' || modeParam === 'solid') ? 'solid' : 'levels';
   const presetParam = searchParams.get('preset');

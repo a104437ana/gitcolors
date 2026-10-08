@@ -199,17 +199,34 @@ Choose how contribution days are colored, with `mode`:
 </picture>
 </a>
 
+## Single image (works in light & dark)
+Don't want two different images switched by `<source>`/`prefers-color-scheme`? Check **🖼️ single image** on the site, or set `theme=auto` directly. One image, same URL either way — the month/day labels switch to a neutral gray and empty-day outlines become a translucent gray, both tuned to stay readable on light and dark backgrounds alike:
+
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
+<picture>
+<img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=auto&mode=mono&preset=rainbow&emptyColor=neutral" width="846" height="164" style="height:auto" />
+</picture>
+</a>
+
+```markdown
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
+  <picture>
+    <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=auto&mode=mono&preset=rainbow&emptyColor=neutral" width="846" height="164" style="height:auto" />
+  </picture>
+</a>
+```
+
 ## API
 You can also hit the API directly to generate the image, without going through the site:
 
-`https://gitcolors.vercel.app/api/svg?username=YOUR_USERNAME&color=HEX&theme=dark|light&mode=solid|levels&preset=rainbow|sunset|wave|girly|dev|github|githubpink|githubblue|githubpurple|githuborange|githubred&animate=true|false&emptyColor=tint|neutral|filled`
+`https://gitcolors.vercel.app/api/svg?username=YOUR_USERNAME&color=HEX&theme=dark|light|auto&mode=solid|levels&preset=rainbow|sunset|wave|girly|dev|github|githubpink|githubblue|githubpurple|githuborange|githubred&animate=true|false&emptyColor=tint|neutral|filled`
 
 - `color` — hex color, no `#` (used when `preset` isn't set)
-- `theme` — `dark` or `light`
+- `theme` — `dark`, `light`, or `auto` (single-image mode: a neutral palette that reads fine on either background, no `<source>` dark/light pair needed)
 - `mode` — `solid` (flat color) or `levels` (intensity-based); ignored by the `github*` presets, which always use their fixed 5-tone scale
 - `preset` — overrides `color` with a built-in palette (`rainbow`, `sunset`, `wave`, `girly`, `dev`, `github`, `githubpink`, `githubblue`, `githubpurple`, `githuborange`, `githubred`)
 - `animate` — set to `false` to disable the cell fade-in animation (default `true`)
-- `emptyColor` — `tint` (default) colors empty-day borders in the same hue as your graph; `neutral` uses a theme-based gray outline instead; `filled` solid-fills empty days with GitHub's own gray, for a look closer to the real contribution graph
+- `emptyColor` — `tint` (default) colors empty-day borders in the same hue as your graph; `neutral` uses a theme-based gray outline instead; `filled` solid-fills empty days with GitHub's own gray, for a look closer to the real contribution graph (with `theme=auto`, `filled` falls back to `neutral`, since there's no single gray that matches both an unknown light and dark background)
 
 ## 🔧 Manual Setup
 If you want an image that automatically switches between dark and light depending on the user's system theme, you can set it up like this:
@@ -223,6 +240,15 @@ If you want an image that automatically switches between dark and light dependin
 </a>
 ```
 Then just replace the values (`username`, `color`, `theme`, `mode`, `preset`) with whatever you'd like, following the options described in the API section above.
+
+Prefer a single image over the `<source>` dark/light pair? Use `theme=auto` and drop the `<source>` tags (keep the `<picture>` wrapper):
+```markdown
+<a href="https://gitcolors.vercel.app" target="_blank" rel="noopener">
+  <picture>
+    <img src="https://gitcolors.vercel.app/api/svg?username=a104437ana&color=ff2d95&theme=auto&mode=mono&preset=dev&emptyColor=neutral" width="846" height="164" style="height:auto" />
+  </picture>
+</a>
+```
 
 ## 🚀 Advanced Setup
 
