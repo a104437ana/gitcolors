@@ -323,3 +323,13 @@ If you like this project, please consider giving it a star ⭐
 ## Stars
 [![a104437ana/gitcolors stars](https://repo-stars.vercel.app/api/stars-badge?repo=a104437ana%2Fgitcolors)](https://repo-stars.vercel.app)
 [![a104437ana/gitcolors stars](https://repo-stars.vercel.app/api/svg?repo=a104437ana%2Fgitcolors)](https://repo-stars.vercel.app)
+
+---
+
+<a href="https://star-history.com/#a104437ana/gitcolors&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=a104437ana/gitcolors&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=a104437ana/gitcolors&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=a104437ana/gitcolors&type=Date" />
+  </picture>
+</a>
