@@ -273,7 +273,7 @@ function generateSVG(weeks, theme, colorHex, mode, preset, animate, emptyColor) 
   const fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif";
 
   const cellSize = 11, gap = 2, step = cellSize + gap;
-  const paddingLeft = 28, paddingTop = 32, paddingRight = 20, paddingBottom = 20;
+  const paddingLeft = 24, paddingTop = 16, paddingRight = 10, paddingBottom = 6;
   const graphW = weeks.length * step;
   const W = graphW + paddingLeft + paddingRight;
   const H = 7 * step + paddingTop + paddingBottom;
